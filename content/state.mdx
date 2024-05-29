@@ -1,0 +1,178 @@
+---
+title: Getting started with State Machines
+abstract: An example of creating a state machine using XState and React.
+publishedOn: "2024-05-27T12:00:00-0400"
+---
+
+<P>
+  In this first excercise, we'll create our first state machine and learn how to
+  transition between states by creating a simple toggle button.
+</P>
+
+<Sandbox files={{
+  "/App.tsx": {
+    code: `import { useMachine } from "@xstate/react";
+import { machine } from "./machine";
+
+function App() {
+const [state, send] = useMachine(machine);
+
+return (
+
+<button
+  onClick={() => {
+    send({ type: "next" });
+  }}
+>
+  {state.value}
+</button>
+); }
+
+export default App;
+
+`,
+  },
+  "/machine.ts": {
+    active: true,
+    code: `import { setup } from "xstate";
+
+export const machine = setup({
+  types: {
+    events: {} as { type: "next" },
+  },
+}).createMachine({
+  initial: "First State",
+  states: {
+    "First State": {
+      on: {
+        next: {
+          target: "Second State",
+        },
+      },
+    },
+    "Second State": {
+      on: {
+        next: {
+          target: "First State",
+        },
+      },
+    },
+  },
+});
+
+`,
+},
+}} />
+
+<P>
+  Lorem ipsum dolor, sit amet consectetur adipisicing elit. Facere porro,
+  corrupti atque neque voluptatibus, sapiente veritatis doloremque quae nobis
+  dolor eius amet voluptatem aliquam cum repellat et exercitationem sit dolorem?
+</P>
+
+<Sandbox files={{
+  "/App.tsx": {
+    code: `function App() {
+  return <button>current state goes here</button>;
+}
+
+export default App;
+`,
+  },
+  "/machine.ts": {
+    active: true,
+    code: `import { setup } from "xstate";
+
+export const machine = setup({
+  types: {
+    events: {} as {},
+  },
+}).createMachine({
+  initial: "",
+  states: {},
+});
+`,
+},
+}} />
+
+<P>
+  Lorem ipsum dolor, sit amet consectetur adipisicing elit. Facere porro,
+  corrupti atque neque voluptatibus, sapiente veritatis doloremque quae nobis
+  dolor eius amet voluptatem aliquam cum repellat et exercitationem sit dolorem?
+</P>
+
+<Sandbox files={
+  { starter: {
+  "/App.tsx": {
+    code: `function App() {
+  return <button>current state goes here</button>;
+}
+
+export default App;
+`,
+  },
+  "/machine.ts": {
+    active: true,
+    code: `import { setup } from "xstate";
+
+export const machine = setup({
+  types: {
+    events: {} as {},
+  },
+}).createMachine({
+  initial: "",
+  states: {},
+});
+`,
+},
+}, solution : {
+  "/App.tsx": {
+    code: `import { useMachine } from "@xstate/react";
+import { machine } from "./machine";
+
+function App() {
+const [state, send] = useMachine(machine);
+
+return (
+
+<button
+  onClick={() => {
+    send({ type: "toggle" });
+  }}
+>
+  {state.value}
+</button>
+); }
+
+export default App;`,
+  },
+  "/machine.ts": {
+    active: true,
+    code: `import { setup } from "xstate";
+
+export const machine = setup({
+  types: {
+    events: {} as { type: "toggle" },
+  },
+}).createMachine({
+  initial: "Inactive",
+  states: {
+    "Inactive": {
+      on: {
+        toggle: {
+          target: "Active",
+        },
+      },
+    },
+    "Active": {
+      on: {
+        toggle: {
+          target: "Inactive",
+        },
+      },
+    },
+  },
+});
+`,
+},
+}}} />
