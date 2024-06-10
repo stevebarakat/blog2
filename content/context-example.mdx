@@ -1,0 +1,374 @@
+---
+title: Storing data in State Machines
+abstract: An example of storing data in a state machine using context.
+publishedOn: "2024-05-27T12:00:00-0400"
+---
+
+In this excercise, we'll be exploring how to store data in a state machine using **context**. Context is a way to store data that is shared across all states in a state machine. For example, you might want to store the current volume level of a music player in a state machine. Here's an example of a state machine that stores the current volume level in the context:
+
+<Stately
+  url="https://stately.ai/registry/editor/embed/4a684cc2-f8a9-4eb6-aeec-a525e6ce2ee4?machineId=09d9af1b-ccaa-4b93-8dd6-c9ea3d4bf5a5"
+  height="600px"
+/>
+
+Here's the same state machine defined in XState:
+
+<div className="wrapper">
+```ts
+import { setup, assign, assertEvent } from "xstate";
+
+export const machine = setup({
+  types: {
+    context: {} as { volume: number },
+    events: {} as
+      | { type: "change.volume"; volume: number }
+      | { type: "start" }
+      | { type: "stop" },
+  },
+  actions: {
+    "change.volume": assign(({ event }) => {
+      assertEvent(event, "change.volume");
+      return { volume: event.volume };
+    }),
+  },
+}).createMachine({
+  context: {
+    volume: 50,
+  },
+  id: "Volume Machine",
+  initial: "Stopped",
+  on: {
+    "change.volume": {
+      actions: {
+        type: "change.volume",
+      },
+    },
+  },
+  states: {
+    Stopped: {
+      on: {
+        start: {
+          target: "Playing",
+        },
+      },
+    },
+    Playing: {
+      on: {
+        stop: {
+          target: "Stopped",
+        },
+      },
+    },
+  },
+});
+```
+To use this machine in a React component, we can use the `useMachine` hook from `@xstate/react`:
+
+```tsx
+import { machine } from "./machine";
+import { useMachine } from "@xstate/react";
+
+function App() {
+  const [state, send] = useMachine(machine);
+  const { volume } = state.context;
+
+  return (
+    <div>
+      <p>Volume: {volume}</p>
+      <input
+        type="range"
+        value={volume}
+        onChange={(e) =>
+          send({ type: "change.volume", volume: e.target.valueAsNumber })
+        }
+      />
+    </div>
+  );
+}
+
+export default App;
+```
+
+</div>
+
+As you can see, the `context` property in the machine definition is used to define the initial context of the machine. The `assign` action is used to update the context when the `change.volume` event is sent. The context is accessed in the React component using `state.context`. The volume level is displayed in a paragraph element, and an input element is used to change the volume level by sending the `change.volume` event with the new volume level. The state machine transitions between the "Stopped" and "Playing" states when the "start" and "stop" events are sent, respectively. Here's the state machine in action:
+
+<CodeEditorProvider
+  files={{
+    starter: {
+      "/App.js": {
+        code: `import { machine } from "./machine";
+import { useMachine } from "@xstate/react";
+
+function App() {
+  const [state, send] = useMachine(machine);
+  const { volume } = state.context;
+
+  return (
+    <div>
+      <p>Volume: {volume}</p>
+      <input
+        type="range"
+        value={volume}
+        onChange={(e) =>
+          send({ type: "change.volume", volume: e.target.valueAsNumber })
+        }
+      />
+    </div>
+  );
+}
+
+export default App;`,
+      },
+      "/machine.ts": {
+        code: `import { setup, assign, assertEvent } from "xstate";
+
+export const machine = setup({
+  types: {
+    context: {} as { volume: number },
+    events: {} as
+      | { type: "change.volume"; volume: number }
+      | { type: "start" }
+      | { type: "stop" },
+  },
+  actions: {
+    "handleChangeVolume": assign(({ event }) => {
+      assertEvent(event, "change.volume");
+      return { volume: event.volume };
+    }),
+  },
+}).createMachine({
+  context: {
+    volume: 50,
+  },
+  id: "Volume Machine",
+  initial: "Stopped",
+  on: {
+    "change.volume": {
+      actions: {
+        type: "handleChangeVolume",
+      },
+    },
+  },
+  states: {
+    Stopped: {
+      on: {
+        start: {
+          target: "Playing",
+        },
+      },
+    },
+    Playing: {
+      on: {
+        stop: {
+          target: "Stopped",
+        },
+      },
+    },
+  },
+});`,
+      },
+    },
+  }}
+/>
+
+Play around with the code above to see how the state machine transitions between states when the button is clicked. Here are some excercises to try:
+
+<div className="wrapper">
+<ul>
+  <li>Change the name of initial value of context to 25.</li>
+
+  <li>Change the name context to "level."</li>
+</ul>
+</div>
+
+## Context Exercise
+In this excercise we'll be using what we learned last lesson and this lesson. We'll be creating a simple login form that stores the user's name in the state machine's context. The form will have two states: "Logged Out" and "Logged In." When the user is logged out, they will see a "Log In" button. When the user is logged in, they will see a "Log Out" button and a text input to enter their name.
+
+Your instructions are as follows:
+
+1. Create a new state machine called "Name Machine" and add the following states and events:
+
+```ts
+import { setup, assign, assertEvent } from "xstate";
+
+export const machine = setup({
+  types: {
+    context: {} as { name: string },
+    events: {} as
+      | { type: "log.in" }
+      | { type: "log.out" }
+      | { type: "change.name"; name: string },
+  },
+  actions: {
+    handleChangeName: assign(({ event }) => {
+      assertEvent(event, "change.name");
+      return { name: event.name };
+    }),
+  },
+}).createMachine({
+  context: {
+    name: "",
+  },
+  id: "Name Machine",
+  initial: "Logged Out",
+  states: {
+    "Logged Out": {
+      on: {
+        "log.in": {
+          target: "Logged In",
+        },
+      },
+    },
+    "Logged In": {
+      on: {
+        "change.name": {
+          actions: {
+            type: "handleChangeName",
+          },
+        },
+        "log.out": {
+          target: "Logged Out",
+        },
+      },
+    },
+  },
+});
+```
+
+2. Add a button to the "Logged Out" state that says "Log In" and a button to the "Logged In" state that says "Log Out." When the user clicks the "Log In" button, send the "log.in" event to the state machine. When the user clicks the "Log Out" button, send the "log.out" event to the state machine.
+
+3. Add a text input to the "Logged In" state that allows the user to enter their name. When the user types in their name, send the "change.name" event with the name as the value of the event to the state machine.
+
+4. Add a paragraph element to the "Logged In" state that displays the user's name from the state machine's context.
+
+Here's the starter code:
+
+
+<CodeEditorProvider files={
+  { starter: {
+  "/App.js": {
+    code: `import { machine } from "./machine";
+import { useMachine } from "@xstate/react";
+
+function App() {
+  const isLoggedOut = true; // replace with machine state
+  return (
+    <>
+      {isLoggedOut ? (
+        <button>Log In</button>
+      ) : (
+        <>
+          <button>Log Out</button>
+          <div>
+            <label htmlFor="name">Name: </label>
+            <input id="name" />
+          </div>
+        </>
+      )}
+    </>
+  );
+}
+
+export default App;
+`,
+  },
+  "/machine.ts": {
+    active: true,
+    code: `import { setup } from "xstate";
+
+export const machine = setup({
+  types: {
+    events: {} as {},
+  },
+}).createMachine({
+  initial: "",
+  states: {},
+});
+`,
+},
+}, solution : {
+  "/App.js": {
+    code: `import { machine } from "./machine";
+import { useMachine } from "@xstate/react";
+
+function App() {
+  const [state, send] = useMachine(machine);
+  const { name } = state.context;
+  const isLoggedOut = state.matches("Logged Out");
+
+  return (
+    <>
+      {isLoggedOut ? (
+        <button onClick={() => send({ type: "log.in" })}>Log In</button>
+      ) : (
+        <>
+          <button onClick={() => send({ type: "log.out" })}>Log Out</button>
+          <div>
+            <input
+              placeholder="Name"
+              value={name}
+              onChange={(e) =>
+                send({ type: "change.name", name: e.target.value })
+              }
+            />
+            <p>Name: {name}</p>
+          </div>
+        </>
+      )}
+    </>
+  );
+}
+
+export default App;
+`,
+  },
+  "/machine.ts": {
+    active: true,
+    code: `import { assertEvent, assign, setup } from "xstate";
+
+export const machine = setup({
+  types: {
+    context: {} as { name: string },
+    events: {} as
+      | { type: "log.in" }
+      | { type: "log.out" }
+      | { type: "change.name"; name: string },
+  },
+  actions: {
+    handleChangeName: assign(({ event }) => {
+      assertEvent(event, "change.name");
+      return { name: event.name };
+    }),
+  },
+}).createMachine({
+  context: {
+    name: "",
+  },
+  id: "Name Machine",
+  initial: "Logged Out",
+  states: {
+    "Logged Out": {
+      on: {
+        "log.in": {
+          target: "Logged In",
+        },
+      },
+    },
+    "Logged In": {
+      on: {
+        "change.name": {
+          actions: {
+            type: "handleChangeName",
+          },
+        },
+        "log.out": {
+          target: "Logged Out",
+        },
+      },
+    },
+  },
+});
+`,
+},
+}}} />

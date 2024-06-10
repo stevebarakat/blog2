@@ -1,0 +1,226 @@
+---
+title: Getting started with State Machines
+abstract: An example of creating a state machine using XState and React.
+publishedOn: "2024-05-27T12:00:00-0400"
+---
+
+In this first excercise, we'll focus on **state**, **transitions**, and
+**events** in a state machine.
+
+A **state** describes the machine’s status or mode, which could be as simple as "First State" and "Second State". A state machine can only be in one state at a time.
+
+A **transition** is a change in state triggered by an **event**.
+
+An **event** is a signal that triggers a transition. For example, when a user clicks a button, the state machine will transition from one state to another. Here's an example of a simple state machine that transitions from "First State" to "Second State" when the "next" event is sent:
+
+<Stately
+  url="https://stately.ai/registry/editor/embed/6ad630e7-c4f1-40e5-8068-4c0a0398a8e9?machineId=a5701504-59a3-4092-9bd4-3972be705357&mode=design"
+  height="350px"
+/>
+
+In XState, a state machine is defined using a JSON-like object. Here's the same state machine defined in XState:
+
+<div className="wrapper">
+```ts
+import { setup } from "xstate";
+
+export const machine = setup({
+  types: {
+    events: {} as { type: "next" },
+  },
+}).createMachine({
+  initial: "First State",
+  states: {
+    "First State": {
+      on: {
+        next: {
+          target: "Second State",
+        },
+      },
+    },
+    "Second State": {
+      on: {
+        next: {
+          target: "First State",
+        },
+      },
+    },
+  },
+});
+```
+To use this machine in a React component, we can use the `useMachine` hook from `@xstate/react`:
+
+```tsx
+import { useMachine } from "@xstate/react";
+import { machine } from "./machine";
+
+function App() {
+  const [state, send] = useMachine(machine);
+
+  return (
+    <>
+      <p>{state.value}</p>
+      <button
+        onClick={() =>
+          send({
+            type: "next",
+          })
+        }
+      >
+        next
+      </button>
+    </>
+  );
+}
+
+export default App;
+```
+
+</div>
+
+As you can see we are using the `useMachine` hook to get the current `state` and the `send` function to dispatch events to the machine. When the button is clicked, the "next" event is sent to the machine, which transitions to the next state. The current state is displayed in a paragraph element. Below is the state machine in action:
+
+<CodeEditorProvider
+  files={{
+    starter: {
+      "/App.js": {
+        code: `import { machine } from "./machine";
+import { useMachine } from "@xstate/react";
+
+function App() {
+const [state, send] = useMachine(machine);
+return (
+
+<>
+  <p>{state.value}</p>
+  <button
+    onClick={() =>
+      send({
+        type: "next",
+      })
+    }
+  >
+    next
+  </button>
+</>
+); }
+
+export default App;`,
+      },
+      "/machine.ts": {
+        code: `import { setup } from "xstate";
+
+export const machine = setup({
+  types: {
+    events: {} as { type: "next" },
+  },
+}).createMachine({
+  initial: "First State",
+  states: {
+    "First State": {
+      on: {
+        next: {
+          target: "Second State",
+        },
+      },
+    },
+    "Second State": {
+      on: {
+        next: {
+          target: "First State",
+        },
+      },
+    },
+  },
+});`,
+      },
+    },
+  }}
+/>
+
+Play around with the code above to see how the state machine transitions between states when the button is clicked. Here are some excercises to try:
+
+<div className="wrapper">
+<ul>
+  <li>Change the name of the event to "toggle" and see how the machine behaves
+  (make sure you do that in App.js and machine.ts).</li>
+
+  <li>Change the name of the states to "Active" and "Inactive" and see how the machine behaves.</li>
+</ul>
+</div>
+
+<CodeEditorProvider files={
+  { starter: {
+  "/App.js": {
+    code: `function App() {
+  return <button>current state goes here</button>;
+}
+
+export default App;
+`,
+  },
+  "/machine.ts": {
+    active: true,
+    code: `import { setup } from "xstate";
+
+export const machine = setup({
+  types: {
+    events: {} as {},
+  },
+}).createMachine({
+  initial: "",
+  states: {},
+});
+`,
+},
+}, solution : {
+  "/App.js": {
+    code: `import { useMachine } from "@xstate/react";
+import { machine } from "./machine";
+
+function App() {
+const [state, send] = useMachine(machine);
+
+return (
+
+<button
+  onClick={() => {
+    send({ type: "toggle" });
+  }}
+>
+  {state.value}
+</button>
+); }
+
+export default App;`,
+  },
+  "/machine.ts": {
+    active: true,
+    code: `import { setup } from "xstate";
+
+export const machine = setup({
+  types: {
+    events: {} as { type: "toggle" },
+  },
+}).createMachine({
+  initial: "Inactive",
+  states: {
+    "Inactive": {
+      on: {
+        toggle: {
+          target: "Active",
+        },
+      },
+    },
+    "Active": {
+      on: {
+        toggle: {
+          target: "Inactive",
+        },
+      },
+    },
+  },
+});
+`,
+},
+}}} />
