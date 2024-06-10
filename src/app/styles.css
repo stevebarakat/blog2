@@ -18,9 +18,18 @@ body {
   color: hsl(236, 17%, 90%);
 }
 
-p {
-  margin-bottom: 1.5em;
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+ul,
+li {
+  margin: 1.5em auto;
   font-size: 1.125rem;
+  max-width: 75ch;
 }
 
 code {
