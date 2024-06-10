@@ -13,11 +13,11 @@ const Sandbox = ({
   return (
     <>
       {solution && (
-        <>
+        <div className="toolbar">
           <button onClick={() => setShowSolution(!showSolution)}>
             {showSolution ? "Hide Solution" : "Show Solution"}
           </button>
-        </>
+        </div>
       )}
       <SandpackProvider
         template="react"
