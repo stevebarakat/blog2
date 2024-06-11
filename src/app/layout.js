@@ -1,11 +1,11 @@
-import { BLOG_TITLE } from "../constants";
+import { BLOG_DESCRIPTION, BLOG_TITLE } from "../constants";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import "../styles.css";
 
 export const metadata = {
   title: BLOG_TITLE,
-  description: "A blog about web development and programming",
+  description: BLOG_DESCRIPTION,
 };
 
 function RootLayout({ children }) {
