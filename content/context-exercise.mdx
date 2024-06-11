@@ -183,12 +183,20 @@ Play around with the code above to see how the state machine transitions between
 </div>
 ## Exercise
 <div className="exercise">
-<div className="container">
 
+<div className="explanation">
+### What we're building:
 
-In this excercise we'll be using what we learned last lesson and this lesson. We'll be creating a simple login form that stores the user's name in the state machine's context. The form will have two states: "Logged Out" and "Logged In." When the user is logged out, they will see a "Log In" button. When the user is logged in, they will see a "Log Out" button and a text input to enter their name.
+In this excercise we'll be using what we learned [last lesson](/state-machine-exercise "Getting Started with State Machines") *and* this lesson to create a simple login form that stores a user's **name** in context.
 
-Your instructions are as follows:
+The form will have two states:
+- "Logged Out" and "Logged In."
+- When the user is logged out, they will see a "Log In" button.
+- When the user is logged in, they will see a "Log Out" button and a text input to enter their name.
+</div>
+
+<div className="requirements">
+### Instructions:
 
 1. Create a new state machine called "Name Machine" and add the following states and events:
 
@@ -201,15 +209,11 @@ Your instructions are as follows:
   - "log.out"
   - "change.name"
 
-2. Add a button for the "Logged Out" state that says "Log In" and a button for the "Logged In" state that says "Log Out." When the user clicks the "Log In" button, send the "log.in" event to the state machine. When the user clicks the "Log Out" button, send the "log.out" event to the state machine.
+2. Add a `button` for the "Logged Out" state that says "Log In" and a `button` for the "Logged In" state that says "Log Out." When the user clicks the "Log In" button, send the "log.in" event to the state machine. When the user clicks the "Log Out" button, send the "log.out" event to the state machine.
 
-3. Add a text input to the "Logged In" state that allows the user to enter their name. When the user types in their name, send the "change.name" event with the name as the value of the event to the state machine.
+3. Add a text `input` to the "Logged In" state that allows the user to enter their name. When the user types in their name, send the "change.name" event with the name as the value of the event to the state machine.
 
-4. Add a paragraph element to the "Logged In" state that displays the user's name from the state machine's context.
-
-Here's the starter code:
-
-</div>
+4. Add a `p` element to the "Logged In" state that displays the user's name from the state machine's context.
 </div>
 
 <CodeEditor files={
@@ -337,3 +341,4 @@ export const machine = setup({
 `,
 },
 }}} />
+</div>
