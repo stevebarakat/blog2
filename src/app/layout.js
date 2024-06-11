@@ -10,6 +10,14 @@ export const metadata = {
     images: [
       {
         url: "https://res.cloudinary.com/stevebarakat/image/upload/v1718105711/xstate-for-everyone-logo.png",
+        width: 245,
+        height: 88,
+        alt: "XState for Everyone Logo",
+      },
+      {
+        url: "https://res.cloudinary.com/stevebarakat/image/upload/v1718105711/xstate-for-everyone-logo.png",
+        width: 245,
+        height: 88,
         alt: "XState for Everyone Logo",
       },
     ],
