@@ -299,13 +299,13 @@ The form will have two states:
 <CodeEditor files={
   { starter: {
   "/App.js": {
-    code: `import UserInterface from "./UserInterface";
+    code: `import UI from "./UI";
 
 function App() {
   return (
     // Replace the div below with the MachineContext.Provider component
     <div>
-      <UserInterface />
+      <UI />
     </div>
   );
 }
@@ -313,8 +313,8 @@ function App() {
 export default App;
 `,
   },
-  "/UserInterface.tsx": {
-    code: `function UserInterface() {
+  "/UI.tsx": {
+    code: `function UI() {
   const isLoggedOut = true; // Change this to match a user's login status using state.matches()
 
   return (
@@ -335,7 +335,7 @@ export default App;
   );
 }
 
-export default UserInterface;
+export default UI;
 `,
 },
 "/machine.ts": {
@@ -354,13 +354,13 @@ export const machine = setup({
 },
 }, solution : {
   "/App.js": {
-    code: `import UserInterface from "./UserInterface";
+    code: `import UI from "./UI";
 import { MachineContext } from "./machine";
 
 function App() {
   return (
     <MachineContext.Provider>
-      <UserInterface />
+      <UI />
     </MachineContext.Provider>
   );
 }
@@ -368,10 +368,10 @@ function App() {
 export default App;
 `,
   },
-  "/UserInterface.tsx": {
+  "/UI.tsx": {
     code: `import { MachineContext } from "./machine";
 
-function UserInterface() {
+function UI() {
   const { send } = MachineContext.useActorRef();
   const state = MachineContext.useSelector((state) => state);
   const { name, newName } = state.context;
@@ -406,7 +406,7 @@ function UserInterface() {
   );
 }
 
-export default UserInterface;
+export default UI;
 `,
   },
   "/machine.ts": {
