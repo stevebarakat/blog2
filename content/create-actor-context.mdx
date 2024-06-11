@@ -296,12 +296,23 @@ The form will have two states:
   - "log.in"
   - "log.out"
   - "change.name"
+  - "set.newName"
 
-2. Add a `button` for the "Logged Out" state that says "Log In" and a `button` for the "Logged In" state that says "Log Out." When the user clicks the "Log In" button, send the "log.in" event to the state machine. When the user clicks the "Log Out" button, send the "log.out" event to the state machine.
+2. Add a `context` object to the state machine with the following properties:
+- `name` (string): The user's name.
+- `newName` (string): The user's new name.
 
-3. Add a text `input` to the "Logged In" state that allows the user to enter their name. When the user types in their name, send the "change.name" event with the name as the value of the event to the state machine.
+3. Add an `input` element to the "Logged In" state that allows the user to enter their name. When the user types in their name, send the "change.name" event with the name as the value of the event to the state machine.
 
-4. Add a `p` element to the "Logged In" state that displays the user's name from the state machine's context.
+4. Add a `button` element to the "Logged In" state that says "Submit." When the user clicks the "Submit" button, send the "set.newName" event with the name as the value of the event to the state machine.
+
+5. Display the user's `newName` in a `p` element in the "Logged In" state.
+
+6. Add a `button` for the "Logged Out" state that says "Log In" and a `button` for the "Logged In" state that says "Log Out." When the user clicks the "Log In" button, send the "log.in" event to the state machine. When the user clicks the "Log Out" button, send the "log.out" event to the state machine.
+
+7. When the user is logged out, they should see the "Log In" button. When the user is logged in, they should see the "Log Out" button, the `text input`, the "Submit" button, and the `p` element that displays the user's `newName`.
+
+8. Make sure the `text input` is a controlled component, and its value is set to the `name` value in **context**.
 </div>
 
 <CodeEditor files={
