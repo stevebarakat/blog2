@@ -47,9 +47,16 @@ button {
 }
 
 h1 {
-  color: hsl(51, 100%, 40%);
   font-size: 2em;
   margin: 24px 0 12px;
+  font-weight: bold;
+}
+
+.page h1 {
+  color: hsl(51, 100%, 40%);
+  font-family: "Tekton";
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
 }
 
 .stately {
@@ -135,10 +142,15 @@ header {
 }
 
 .site-footer {
-  padding: 1em;
+  padding: 0;
+  margin: 0;
   width: 100%;
   max-width: 100%;
   background: hsl(236, 17%, 20%);
+  position: fixed;
+  & p {
+    margin: 8px 24px;
+  }
 }
 
 header {
@@ -153,4 +165,20 @@ footer {
 }
 .sp-c-bxeRRt[data-active="true"] {
   border-bottom: 3px solid;
+  border-radius: 0;
+}
+
+ol.table-of-contents {
+  padding: 0;
+  & li {
+    background: hsl(236, 17%, 20%);
+    padding: 1rem;
+    border: 1px solid hsl(236, 17%, 10%);
+    list-style-position: inside;
+  }
+  & .lesson-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    font-family: "Tekton";
+  }
 }

@@ -7,20 +7,22 @@ async function Home() {
   const blogPosts = await getBlogPostList();
 
   return (
-    <div>
-      <h1>Exercises:</h1>
+    <div className="container page">
+      <h1>Module One</h1>
 
-      <ol>
+      <ol className="table-of-contents">
         {blogPosts.map(({ slug, title, abstract, publishedOn }) => (
           <li key={slug}>
-            <Link href={`${slug}`}>{title}</Link>
+            <Link className="lesson-title" href={`${slug}`}>
+              {title}
+            </Link>
 
-            {/* <p>
+            <p>
               {abstract}{" "}
               <Link href={`${slug}`}>
-                Continue reading <span>→</span>
+                Go to lesson <span>→</span>
               </Link>
-            </p> */}
+            </p>
           </li>
         ))}
       </ol>

@@ -1,2 +1,4 @@
-export * from "./CodeSnippet";
-export { default } from "./CodeSnippet";
+import CodeSnippetClient from "./CodeSnippetClient";
+import { CodeSnippetServer } from "./CodeSnippet";
+
+export { CodeSnippetClient, CodeSnippetServer };
