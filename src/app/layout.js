@@ -6,7 +6,7 @@ import "../styles.css";
 export const metadata = {
   title: BLOG_TITLE,
   description: BLOG_DESCRIPTION,
-  image: "/logo.png",
+  image: "/cover.png",
 };
 
 function RootLayout({ children }) {
