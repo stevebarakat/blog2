@@ -5,7 +5,7 @@ publishedOn: 2
 ---
 
 <div className="container">
-In this excercise, we'll be exploring how to store data in a state machine using **context**. Context is a way to store data that is shared across all states in a state machine. For example, you might want to store the current volume level of a music player in a state machine. Here's an example of a state machine that stores the current volume level in **context**:
+In this excercise, we'll be exploring how to store data in a state machine using **context**. Context is a way to store data that is shared across all states in a state machine. For example, you might want to store the current volume of a music player in a state machine. Here's an example of a state machine that stores the current volume in **context**:
 
 <Stately
   url="https://stately.ai/registry/editor/embed/4a684cc2-f8a9-4eb6-aeec-a525e6ce2ee4?machineId=09d9af1b-ccaa-4b93-8dd6-c9ea3d4bf5a5"
@@ -90,7 +90,7 @@ return (
 export default App;
 ```
 
-As you can see, the `context` property in the machine definition is used to define the initial context of the machine. The `assign` action is used to update the context when the `change.volume` event is sent. The context is accessed in the React component using `state.context`. The volume level is displayed in a paragraph element, and an input element is used to change the volume level by sending the `change.volume` event with the new volume level. The state machine transitions between the "Stopped" and "Playing" states when the "start" and "stop" events are sent, respectively. Here's the state machine in action:
+As you can see, the `context` property in the machine definition is used to define the initial context of the machine. The `assign` action is used to update the context when the `change.volume` event is sent. The context is accessed in the React component using `state.context`. The volume is displayed in a paragraph element, and an input element is used to change the volume by sending the `change.volume` event with the new volume. The state machine transitions between the "Stopped" and "Playing" states when the "start" and "stop" events are sent, respectively. Here's the state machine in action:
 </div>
 
 <CodeEditor

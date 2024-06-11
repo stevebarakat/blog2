@@ -5,7 +5,7 @@ publishedOn: 3
 ---
 
 <div className="container">
-This example re-creates the example from the [previous lesson](/context-exercise "Storing data in State Machines") , but uses `createActorContext` to work with context instead. `createActorContext` is a helper function from [@xstate/react](https://github.com/statelyai/xstate/tree/main/packages/xstate-react#readme/ "@xstate/react") that creates a context object used to store data in a state machine. Here's an example of a state machine that stores the current volume level in the context using `createActorContext`:
+This example re-creates the example from the [previous lesson](/context-exercise "Storing data in State Machines") , but uses `createActorContext` to work with context instead. `createActorContext` is a helper function from [@xstate/react](https://github.com/statelyai/xstate/tree/main/packages/xstate-react#readme/ "@xstate/react") that creates a context object used to store data in a state machine. Here's an example of a state machine that stores the current volume in the context using `createActorContext`:
 
 ```ts
 import { setup, assign, assertEvent } from "xstate";
@@ -62,7 +62,7 @@ export const MachineContext = createActorContext(machine);
 
 To use MachineContext we created a new `Volume` component that is wrapped in a `MachineContext.Provider` component. Similar to using React's context, the components that want to use this context  must be wrapped in a `Provider` component.
 
-Notice that the `MachineContext.Provider` component takes an `options` prop used to pass initial context data to the state machine. In this example, we pass an initial volume level of `50` to the state machine.
+Notice that the `MachineContext.Provider` component takes an `options` prop used to pass initial context data to the state machine. In this example, we pass an initial volume of `50` to the state machine.
 
 Here's the `App` component that uses the `MachineContext.Provider` component:
 
@@ -128,7 +128,14 @@ The `MachineContext` object provides two hooks: `useActorRef` and `useSelector.`
 - `useActorRef` returns a reference to the state machine, which is used to send events to it.
 - `useSelector` returns a selector function that is used to access specific slices of the state machine's context ***without*** causing all the decendents of MixerContext to re-render.
 
-In this example, we use `useSelector` to access `context` and display the current volume level and state. We use `useActorRef` to send events to the state machine when the user interacts with the UI. The `Volume` component displays the current volume level, state, and provides a button to start or stop the audio and a range input to adjust the volume level. The state machine transitions between the "Playing" and "Stopped" states based on the events sent to it. The volume level is updated when the user interacts with the range input. Here's the `Volume` component in action:
+In this example:
+- We use `useSelector` to access `context` and retreive the current **state** and the current **volume**.
+- We use `useActorRef` to send events to the state machine when the user interacts with the UI.
+- The `Volume` component displays the current volume and the current state. It also provides a `button` to start or stop the audio and a `range input` to adjust the volume.
+- The machine transitions between the "Playing" and "Stopped" states based on the **events** sent to it.
+- The volume is updated when the user interacts with the `range input`.
+
+Here's the `Volume` component in action:
 </div>
 
 <CodeEditor
