@@ -1,7 +1,7 @@
 ---
 title: Working with Compound States
 abstract: In this lesson, we'll begin working with statecharts by using compound (or parent/child) states.
-position: 4
+position: 3
 ---
 
 <div className="container">
@@ -9,7 +9,6 @@ In this lesson, we'll introduce compound (or parent/child) states. Compound stat
 
 Let's take a look at an example of a simple state machine with compound states (technically a statechart). This statechart represents a media player that can be in one of three states: "Opened", "Closed", and "Closing". The "Closed" state is a parent state. It has three child states: "Stopped", "Playing", and "Paused". The "Closing" state transitions to the "Closed.Playing" state after 1500ms. Here's the state machine defined in Stately:
 
-<Info />
 </div>
 
 <Stately

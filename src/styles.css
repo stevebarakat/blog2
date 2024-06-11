@@ -30,6 +30,7 @@ body {
   flex-direction: column;
   background: var(--color-tertiary);
   color: var(--color-text);
+  padding-bottom: 50px;
 }
 
 a {
@@ -45,6 +46,13 @@ code {
   font-size: 105%;
   /* background: hsl(0 0% 0%); */
   color: var(--color-primary);
+}
+
+.pagination {
+  display: flex;
+  justify-content: space-between;
+  margin: 24px auto;
+  width: 100%;
 }
 
 .container {

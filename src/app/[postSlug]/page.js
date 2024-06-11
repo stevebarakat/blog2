@@ -6,6 +6,7 @@ import Stately from "../../components/Stately";
 import Stackblitz from "../../components/Stackblitz";
 import CodeEditor from "../../components/CodeEditor";
 import Info from "../../components/Info";
+import Pagination from "../../components/Pagination";
 
 export async function generateMetadata({ params }) {
   const { frontmatter } = await loadBlogPost(params?.postSlug);
@@ -17,26 +18,31 @@ export async function generateMetadata({ params }) {
 async function BlogPost({ params }) {
   const { frontmatter, content } = await loadBlogPost(params.postSlug);
 
+  console.log("frontmatter", frontmatter);
+
   return (
-    <article>
-      <header>
+    <>
+      <article>
+        <header>
+          <div>
+            <h1>{frontmatter.title}</h1>
+          </div>
+        </header>
         <div>
-          <h1>{frontmatter.title}</h1>
+          <MDXRemote
+            source={content}
+            components={{
+              pre: CodeSnippet,
+              Stately,
+              Stackblitz,
+              CodeEditor,
+              Info,
+            }}
+          />
         </div>
-      </header>
-      <div>
-        <MDXRemote
-          source={content}
-          components={{
-            pre: CodeSnippet,
-            Stately,
-            Stackblitz,
-            CodeEditor,
-            Info,
-          }}
-        />
-      </div>
-    </article>
+        <Pagination currentPosition={frontmatter.position} />
+      </article>
+    </>
   );
 }
 
