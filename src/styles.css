@@ -4,6 +4,7 @@
   --color-tertiary: hsl(236, 17%, 10%);
   --color-text: hsl(236, 17%, 90%);
   --color-link: hsl(51, 100%, 50%);
+  --color-info: hsl(221 60% 30%/0.63);
 }
 
 *,
@@ -119,6 +120,16 @@ article {
   border-radius: 4px 4px 0 0;
   border-bottom: none;
   color: white;
+}
+
+.reveal-button {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1.25rem;
+  padding: 0.5rem 1rem;
+  background: var(--color-info);
 }
 
 .sp-layout {

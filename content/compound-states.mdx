@@ -6,6 +6,10 @@ position: 4
 
 <div className="container">
 In this lesson, we'll introduce compound (or parent/child) states. Compound states are states that contain other states. They are useful for organizing and structuring complex state machines. Compound states can have nested states, which can have their own nested states, and so on. This allows you to create a hierarchical structure of states that can represent complex behavior.
+
+Let's take a look at an example of a simple state machine with compound states (technically a statechart). This statechart represents a media player that can be in one of three states: "Opened", "Closed", and "Closing". The "Closed" state is a parent state. It has three child states: "Stopped", "Playing", and "Paused". The "Closing" state transitions to the "Closed.Playing" state after 1500ms. Here's the state machine defined in Stately:
+
+<Info />
 </div>
 
 <Stately
@@ -21,22 +25,69 @@ import { setup } from "xstate";
 
 export const machine = setup({
   types: {
-    events: {} as { type: "next" },
+    events: {} as
+      | { type: "CLOSE" }
+      | { type: "PLAY" }
+      | { type: "PAUSE" }
+      | { type: "STOP" }
+      | { type: "OPEN" },
   },
 }).createMachine({
-  initial: "First State",
+  context: {},
+  id: "Parent states",
+  initial: "Opened",
   states: {
-    "First State": {
+    Opened: {
       on: {
-        next: {
-          target: "Second State",
+        CLOSE: {
+          target: "Closed",
+        },
+        PLAY: {
+          target: "Closing",
         },
       },
     },
-    "Second State": {
+    Closed: {
+      initial: "Stopped",
       on: {
-        next: {
-          target: "First State",
+        OPEN: {
+          target: "Opened",
+        },
+      },
+      states: {
+        Stopped: {
+          on: {
+            PLAY: {
+              target: "Playing",
+            },
+          },
+        },
+        Playing: {
+          on: {
+            PAUSE: {
+              target: "Paused",
+            },
+            STOP: {
+              target: "Stopped",
+            },
+          },
+        },
+        Paused: {
+          on: {
+            PLAY: {
+              target: "Playing",
+            },
+            STOP: {
+              target: "Stopped",
+            },
+          },
+        },
+      },
+    },
+    Closing: {
+      after: {
+        "1500": {
+          target: "#Parent states.Closed.Playing",
         },
       },
     },
@@ -47,25 +98,43 @@ export const machine = setup({
 To use this machine in a React component, we can use the `useMachine` hook from `@xstate/react`:
 
 ```tsx
-import { useMachine } from "@xstate/react";
 import { machine } from "./machine";
+import { useMachine } from "@xstate/react";
 
 function App() {
   const [state, send] = useMachine(machine);
-
+  const isPlaying = state.matches({ Closed: "Playing" });
+  const isOpened = state.matches("Opened");
   return (
-    <>
-      <p>{state.value}</p>
+    <div>
+      <h1>{JSON.stringify(state.value)}</h1>
       <button
         onClick={() =>
           send({
-            type: "next",
+            type: isOpened ? "CLOSE" : "OPEN",
           })
         }
       >
-        next
+        {isOpened ? "close" : "open"}
       </button>
-    </>
+      <button
+        onClick={() =>
+          send({
+            type: isPlaying ? "PAUSE" : "PLAY",
+          })
+        }
+      >
+        {isPlaying ? "pause" : "play"}
+      </button>
+      <button
+        disabled={isOpened || !isPlaying}
+        onClick={() => {
+          send({ type: "STOP" });
+        }}
+      >
+        stop
+      </button>
+    </div>
   );
 }
 

@@ -5,6 +5,7 @@ import CodeSnippet from "../../components/CodeSnippet/CodeSnippet";
 import Stately from "../../components/Stately";
 import Stackblitz from "../../components/Stackblitz";
 import CodeEditor from "../../components/CodeEditor";
+import Info from "../../components/Info";
 
 export async function generateMetadata({ params }) {
   const { frontmatter } = await loadBlogPost(params?.postSlug);
@@ -31,6 +32,7 @@ async function BlogPost({ params }) {
             Stately,
             Stackblitz,
             CodeEditor,
+            Info,
           }}
         />
       </div>
