@@ -32,7 +32,6 @@ import { setup } from "xstate";
 
 export const machine = setup({
   types: {
-    context: {} as {},
     events: {} as
       | { type: "OPEN" }
       | { type: "PLAY" }
@@ -41,8 +40,6 @@ export const machine = setup({
       | { type: "CLOSE" },
   },
 }).createMachine({
-  context: {},
-  id: "Parent states",
   initial: "Opened",
   states: {
     Opened: {
@@ -211,8 +208,6 @@ export const machine = setup({
       | { type: "OPEN" },
   },
 }).createMachine({
-  context: {},
-  id: "Parent states",
   initial: "Opened",
   states: {
     Opened: {
@@ -262,7 +257,7 @@ export const machine = setup({
     Closing: {
       after: {
         "1500": {
-          target: "#Parent states.Closed",
+          target: "Closed",
         },
       },
     },
@@ -352,12 +347,9 @@ export default App;
 
 export const machine = setup({
   types: {
-    context: {} as {},
     events: {} as { type: "weigh" } | { type: "grind" } | { type: "brew" },
   },
 }).createMachine({
-  context: {},
-  id: "Coffee Machine",
   initial: "preparation",
   states: {
     preparation: {
