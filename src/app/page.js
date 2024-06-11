@@ -8,22 +8,22 @@ async function Home() {
 
   return (
     <div>
-      <h1>Latest Content:</h1>
+      <h1>Exercises:</h1>
 
-      {blogPosts.map(({ slug, title, abstract, publishedOn }) => (
-        <>
-          <Link href={`${slug}`}>{title}</Link>
-          <time dateTime={publishedOn}>
-            {format(new Date(publishedOn), "MMMM do, yyyy")}
-          </time>
-          <p>
-            {abstract}{" "}
-            <Link href={`${slug}`}>
-              Continue reading <span>→</span>
-            </Link>
-          </p>
-        </>
-      ))}
+      <ol>
+        {blogPosts.map(({ slug, title, abstract, publishedOn }) => (
+          <li key={slug}>
+            <Link href={`${slug}`}>{title}</Link>
+
+            {/* <p>
+              {abstract}{" "}
+              <Link href={`${slug}`}>
+                Continue reading <span>→</span>
+              </Link>
+            </p> */}
+          </li>
+        ))}
+      </ol>
     </div>
   );
 }

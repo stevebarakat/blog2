@@ -4,7 +4,9 @@ import Logo from "./Logo";
 function Header() {
   return (
     <header className="site-header">
-      <Logo />
+      <div className="container">
+        <Logo />
+      </div>
     </header>
   );
 }

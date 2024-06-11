@@ -1,9 +1,10 @@
 ---
 title: Getting started with State Machines
 abstract: An example of creating a state machine using XState and React.
-publishedOn: "2024-05-27T12:00:00-0400"
+publishedOn: 1
 ---
 
+<div className="container">
 In this first excercise, we'll focus on **state**, **transitions**, and
 **events** in a state machine.
 
@@ -20,7 +21,6 @@ An **event** is a signal that triggers a transition. For example, when a user cl
 
 In XState, a state machine is defined using a JSON-like object. Here's the same state machine defined in XState:
 
-<div className="wrapper">
 ```ts
 import { setup } from "xstate";
 
@@ -48,6 +48,7 @@ export const machine = setup({
   },
 });
 ```
+
 To use this machine in a React component, we can use the `useMachine` hook from `@xstate/react`:
 
 ```tsx
@@ -76,9 +77,9 @@ function App() {
 export default App;
 ```
 
-</div>
-
 As you can see we are using the `useMachine` hook to get the current `state` and the `send` function to dispatch events to the machine. When the button is clicked, the "next" event is sent to the machine, which transitions to the next state. The current state is displayed in a paragraph element. Below is the state machine in action:
+
+</div>
 
 <CodeEditorProvider
   files={{
@@ -138,9 +139,9 @@ export const machine = setup({
   }}
 />
 
+<div className="container">
 Play around with the code above to see how the state machine transitions between states when the button is clicked. Here are some excercises to try:
 
-<div className="wrapper">
 <ul>
   <li>Change the name of the event to "toggle" and see how the machine behaves
   (make sure you do that in App.js and machine.ts).</li>

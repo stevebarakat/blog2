@@ -1,7 +1,7 @@
 ---
 title: Storing data in State Machines
 abstract: An example of storing data in a state machine using context.
-publishedOn: "2024-05-27T12:00:00-0400"
+publishedOn: 2
 ---
 
 In this excercise, we'll be exploring how to store data in a state machine using **context**. Context is a way to store data that is shared across all states in a state machine. For example, you might want to store the current volume level of a music player in a state machine. Here's an example of a state machine that stores the current volume level in the context:
@@ -76,18 +76,18 @@ const [state, send] = useMachine(machine);
 const { volume } = state.context;
 
 return (
+
 <div>
-<p>Volume: {volume}</p>
-<input
-type="range"
-value={volume}
-onChange={(e) =>
-send({ type: "change.volume", volume: e.target.valueAsNumber })
-}
-/>
+  <p>Volume: {volume}</p>
+  <input
+    type="range"
+    value={volume}
+    onChange={(e) =>
+      send({ type: "change.volume", volume: e.target.valueAsNumber })
+    }
+  />
 </div>
-);
-}
+); }
 
 export default App;
 ```
@@ -108,18 +108,18 @@ const [state, send] = useMachine(machine);
 const { volume } = state.context;
 
 return (
+
 <div>
-<p>Volume: {volume}</p>
-<input
-type="range"
-value={volume}
-onChange={(e) =>
-send({ type: "change.volume", volume: e.target.valueAsNumber })
-}
-/>
+  <p>Volume: {volume}</p>
+  <input
+    type="range"
+    value={volume}
+    onChange={(e) =>
+      send({ type: "change.volume", volume: e.target.valueAsNumber })
+    }
+  />
 </div>
-);
-}
+); }
 
 export default App;`,
       },
@@ -257,21 +257,21 @@ import { useMachine } from "@xstate/react";
 function App() {
 const isLoggedOut = true; // replace with machine state
 return (
+
 <>
-{isLoggedOut ? (
-<button>Log In</button>
-) : (
-<>
-<button>Log Out</button>
-<div>
-<label htmlFor="name">Name: </label>
-<input id="name" />
-</div>
+  {isLoggedOut ? (
+    <button>Log In</button>
+  ) : (
+    <>
+      <button>Log Out</button>
+      <div>
+        <label htmlFor="name">Name: </label>
+        <input id="name" />
+      </div>
+    </>
+  )}
 </>
-)}
-</>
-);
-}
+); }
 
 export default App;
 `,
@@ -301,27 +301,25 @@ const { name } = state.context;
 const isLoggedOut = state.matches("Logged Out");
 
 return (
+
 <>
-{isLoggedOut ? (
-<button onClick={() => send({ type: "log.in" })}>Log In</button>
-) : (
-<>
-<button onClick={() => send({ type: "log.out" })}>Log Out</button>
-<div>
-<input
-placeholder="Name"
-value={name}
-onChange={(e) =>
-send({ type: "change.name", name: e.target.value })
-}
-/>
-<p>Name: {name}</p>
-</div>
+  {isLoggedOut ? (
+    <button onClick={() => send({ type: "log.in" })}>Log In</button>
+  ) : (
+    <>
+      <button onClick={() => send({ type: "log.out" })}>Log Out</button>
+      <div>
+        <input
+          placeholder="Name"
+          value={name}
+          onChange={(e) => send({ type: "change.name", name: e.target.value })}
+        />
+        <p>Name: {name}</p>
+      </div>
+    </>
+  )}
 </>
-)}
-</>
-);
-}
+); }
 
 export default App;
 `,

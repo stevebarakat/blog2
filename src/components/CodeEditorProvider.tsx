@@ -11,14 +11,7 @@ const Sandbox = ({
 }) => {
   const [showSolution, setShowSolution] = useState(false);
   return (
-    <>
-      {solution && (
-        <div className="toolbar">
-          <button onClick={() => setShowSolution(!showSolution)}>
-            {showSolution ? "Hide Solution" : "Show Solution"}
-          </button>
-        </div>
-      )}
+    <div className="editor">
       <SandpackProvider
         template="react"
         files={showSolution ? solution : starter}
@@ -32,9 +25,16 @@ const Sandbox = ({
           },
         }}
       >
+        {solution && (
+          <div className="toolbar">
+            <button onClick={() => setShowSolution(!showSolution)}>
+              {showSolution ? "Hide Solution" : "Show Solution"}
+            </button>
+          </div>
+        )}
         <CodeEditor />
       </SandpackProvider>
-    </>
+    </div>
   );
 };
 export default Sandbox;

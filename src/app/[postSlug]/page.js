@@ -1,4 +1,3 @@
-import { format } from "date-fns";
 import { loadBlogPost } from "../../helpers/file-helpers";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import { BLOG_TITLE } from "../../constants";
@@ -17,19 +16,12 @@ export async function generateMetadata({ params }) {
 }
 async function BlogPost({ params }) {
   const { frontmatter, content } = await loadBlogPost(params.postSlug);
-  const formattedDate = format(
-    new Date(frontmatter.publishedOn),
-    "MMMM do, yyyy"
-  );
+
   return (
-    <article className="container">
+    <article>
       <header>
         <div>
           <h1>{frontmatter.title}</h1>
-          <p>
-            Published on
-            <time dateTime={frontmatter.publishedOn}>{formattedDate}</time>
-          </p>
         </div>
       </header>
       <div>

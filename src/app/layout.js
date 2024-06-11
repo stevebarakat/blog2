@@ -1,7 +1,7 @@
 import { BLOG_TITLE } from "../constants";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-import "./styles.css";
+import "../styles.css";
 
 export const metadata = {
   title: BLOG_TITLE,
