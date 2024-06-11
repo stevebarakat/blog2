@@ -267,12 +267,20 @@ Play around with the code above to see how the state machine transitions between
 <div className="explanation">
 ### What we're building:
 
-In this excercise we'll be using what we learned [last lesson](/state-machine-exercise "Getting Started with State Machines") *and* this lesson to create a simple login form that stores a user's **name** in context.
+In this excercise we'll be enhancing the component we made in the [last lesson](/context-exercise "Storing data in State Machines") by making it so the user's name will only be updated when they submit the form. We'll add:
+- A `submit button` to the UI.
+- A `newName` value to **context**.
+
+We'll also use `createActorContext` to work with **context** instead of using the `useMachine` hook.
 
 The form will have two states:
 - "Logged Out" and "Logged In."
-- When the user is logged out, they will see a "Log In" button.
-- When the user is logged in, they will see a "Log Out" button and a text input to enter their name.
+- When the user is logged out, they will see a "Log In" `button`.
+- When the user is logged in, they will see a "Log Out" `button` and a `text input` to enter their name.
+- The user's name will be stored in **context** and will be updated as the user types in the `text input`.
+- This should be a controlled component, so the value of the `text input` should be set to the `name` value in **context**.
+- When the form is submitted, the value of the text input (`name`) used to update the `newName` value in **context**.
+- Instead of displaying the `name` value as it is being updated, we'll display the `newName` value instead.
 </div>
 
 <div className="requirements">
