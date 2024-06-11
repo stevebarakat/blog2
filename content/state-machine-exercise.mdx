@@ -10,7 +10,7 @@ In this first excercise, we'll focus on **state**, **transitions**, and
 
 A **state** describes the machine’s status or mode, which could be as simple as "First State" and "Second State". A state machine can only be in one state at a time.
 
-A **transition** is a change in state triggered by an **event**.
+A **transition** is a change in **state** triggered by an **event**.
 
 An **event** is a signal that triggers a transition. For example, when a user clicks a button, the state machine will transition from one state to another. Here's an example of a simple state machine that transitions from "First State" to "Second State" when the "next" event is sent:
 
@@ -186,7 +186,7 @@ return (
 
 <button
   onClick={() => {
-    send({ type: "toggle" });
+    send({ type: "switch" });
   }}
 >
   {state.value}
@@ -201,22 +201,22 @@ export default App;`,
 
 export const machine = setup({
   types: {
-    events: {} as { type: "toggle" },
+    events: {} as { type: "switch" },
   },
 }).createMachine({
-  initial: "Inactive",
+  initial: "Off",
   states: {
-    "Inactive": {
+    "Off": {
       on: {
-        toggle: {
-          target: "Active",
+        switch: {
+          target: "On",
         },
       },
     },
-    "Active": {
+    "On": {
       on: {
-        toggle: {
-          target: "Inactive",
+        switch: {
+          target: "Off",
         },
       },
     },
