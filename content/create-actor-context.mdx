@@ -4,14 +4,16 @@ abstract: An example of using createActorContext to work with data.
 publishedOn: 3
 ---
 
-In this excercise, we'll be re-create the same example from the previous lesson using `createActorContext` to work with context. `createActorContext` is a function that creates a context object that can be used to store data in a state machine. Here's an example of a state machine that stores the current volume level in the context using `createActorContext`:
+<div className="container">
+In this excercise, we'll be re-creating the same example from the previous lesson, but we'll be using `createActorContext` to work with context instead. `createActorContext` is a helper function from the [@xstate/react](https://github.com/statelyai/xstate/tree/main/packages/xstate-react#readme/ "@xstate/react") package that creates a context object that can be used to store data in a state machine. Here's an example of a state machine that stores the current volume level in the context using `createActorContext`:
 
-<div className="wrapper">
 ```ts
 import { setup, assign, assertEvent } from "xstate";
+import { createActorContext } from "@xstate/react";
 
 export const machine = setup({
   types: {
+    input: {} as { volume: number },
     context: {} as { volume: number },
     events: {} as
       | { type: "change.volume"; volume: number }
@@ -25,9 +27,9 @@ export const machine = setup({
     }),
   },
 }).createMachine({
-  context: {
-    volume: 50,
-  },
+  context: ({ input }) => ({
+    volume: input?.volume,
+  }),
   id: "Volume Machine",
   initial: "Stopped",
   on: {
@@ -54,73 +56,94 @@ export const machine = setup({
     },
   },
 });
+
+export const MachineContext = createActorContext(machine);
 ```
-</div>
 
 To use this machine in a React component, we can use the `useMachine` hook from `@xstate/react`:
 
-<div className="wrapper">
 ```tsx
 import { machine } from "./machine";
 import { useMachine } from "@xstate/react";
 
 function App() {
-const [state, send] = useMachine(machine);
-const { volume } = state.context;
+  const [state, send] = useMachine(machine);
+  const { volume } = state.context;
 
-return (
-
-<div>
-  <p>Volume: {volume}</p>
-  <input
-    type="range"
-    value={volume}
-    onChange={(e) =>
-      send({ type: "change.volume", volume: e.target.valueAsNumber })
-    }
-  />
-</div>
-); }
+  return (
+    <div>
+      <p>Volume: {volume}</p>
+      <input
+        type="range"
+        value={volume}
+        onChange={(e) =>
+          send({ type: "change.volume", volume: e.target.valueAsNumber })
+        }
+      />
+    </div>
+  );
+}
 
 export default App;
 ```
 
-</div>
-
 As you can see, the `context` property in the machine definition is used to define the initial context of the machine. The `assign` action is used to update the context when the `change.volume` event is sent. The context is accessed in the React component using `state.context`. The volume level is displayed in a paragraph element, and an input element is used to change the volume level by sending the `change.volume` event with the new volume level. The state machine transitions between the "Stopped" and "Playing" states when the "start" and "stop" events are sent, respectively. Here's the state machine in action:
+
+</div>
 
 <CodeEditorProvider
   files={{
     starter: {
       "/App.js": {
-        code: `import { machine } from "./machine";
-import { useMachine } from "@xstate/react";
+        code: `import Volume from "./Volume";
+import { MachineContext } from "./machine";
 
 function App() {
-const [state, send] = useMachine(machine);
-const { volume } = state.context;
-
-return (
-
-<div>
-  <p>Volume: {volume}</p>
-  <input
-    type="range"
-    value={volume}
-    onChange={(e) =>
-      send({ type: "change.volume", volume: e.target.valueAsNumber })
-    }
-  />
-</div>
-); }
+  return (
+    <MachineContext.Provider
+      options={{
+        input: {
+          volume: 50,
+        },
+      }}
+    >
+      <Volume />
+    </MachineContext.Provider>
+  );
+}
 
 export default App;`,
       },
+      "/Volume.js": {
+        code: `import { MachineContext } from "./machine";
+
+function Volume() {
+  const { send } = MachineContext.useActorRef();
+  const { volume } = MachineContext.useSelector((state) => state.context);
+
+  return (
+    <div>
+      <p>Volume: {volume}</p>
+      <input
+        type="range"
+        value={volume}
+        onChange={(e) =>
+          send({ type: "change.volume", volume: e.target.valueAsNumber })
+        }
+      />
+    </div>
+  );
+}
+
+export default Volume;`,
+      },
       "/machine.ts": {
         code: `import { setup, assign, assertEvent } from "xstate";
+import { createActorContext } from "@xstate/react";
 
 export const machine = setup({
   types: {
+    input: {} as { volume: number },
     context: {} as { volume: number },
     events: {} as
       | { type: "change.volume"; volume: number }
@@ -128,21 +151,21 @@ export const machine = setup({
       | { type: "stop" },
   },
   actions: {
-    "handleChangeVolume": assign(({ event }) => {
+    "change.volume": assign(({ event }) => {
       assertEvent(event, "change.volume");
       return { volume: event.volume };
     }),
   },
 }).createMachine({
-  context: {
-    volume: 50,
-  },
+  context: ({ input }) => ({
+    volume: input?.volume,
+  }),
   id: "Volume Machine",
   initial: "Stopped",
   on: {
     "change.volume": {
       actions: {
-        type: "handleChangeVolume",
+        type: "change.volume",
       },
     },
   },
@@ -162,7 +185,10 @@ export const machine = setup({
       },
     },
   },
-});`,
+});
+
+export const MachineContext = createActorContext(machine);
+`,
       },
     },
   }}
