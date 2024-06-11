@@ -146,7 +146,9 @@ function App() {
 export default App;
 ```
 
-As you can see, we're using the `matches` method to check if the current state matches a specific state. This is useful for conditionally rendering UI elements based on the current state of the machine. We're also using the `after` property to transition to another state after a certain amount of time has passed. This is useful for modeling time-based behavior in your state machines. In this case, we're transitioning from the "Closing" state to the "Closed.Playing" state after 1500ms.
+As you can see,
+- We're using the `matches` method to check if the current state matches a specific state. This is useful for conditionally rendering UI elements based on the current state of the machine.
+- We're also using the `after` property to transition to another state after a certain amount of time has passed. In this case, we're transitioning from the "Closing" state to the "Closed.Playing" state after 1500ms.
 </div>
 
 <CodeEditor
@@ -159,7 +161,6 @@ import { useMachine } from "@xstate/react";
 function App() {
   const [state, send] = useMachine(machine);
   const isPlaying = state.matches({ Closed: "Playing" });
-  const isStopped = state.matches({ Closed: "Stopped" });
   const isOpened = state.matches("Opened");
   return (
     <div>
@@ -183,7 +184,7 @@ function App() {
         {isPlaying ? "pause" : "play"}
       </button>
       <button
-        disabled={isOpened || isStopped}
+        disabled={isOpened || !isPlaying}
         onClick={() => {
           send({ type: "STOP" });
         }}
@@ -194,7 +195,8 @@ function App() {
   );
 }
 
-export default App;`,
+export default App;
+`,
       },
       "/machine.ts": {
         code: `import { setup } from "xstate";
@@ -216,9 +218,6 @@ export const machine = setup({
     Opened: {
       on: {
         CLOSE: {
-          target: "Closed",
-        },
-        PLAY: {
           target: "Closing",
         },
       },
@@ -263,12 +262,13 @@ export const machine = setup({
     Closing: {
       after: {
         "1500": {
-          target: "#Parent states.Closed.Playing",
+          target: "#Parent states.Closed",
         },
       },
     },
   },
-});`,
+});
+`,
       },
     },
   }}
