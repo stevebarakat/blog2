@@ -299,32 +299,46 @@ The form will have two states:
 <CodeEditor files={
   { starter: {
   "/App.js": {
-    code: `import { machine } from "./machine";
-import { useMachine } from "@xstate/react";
+    code: `import UserInterface from "./UserInterface";
 
 function App() {
-const isLoggedOut = true; // replace with machine state
-return (
-
-<>
-  {isLoggedOut ? (
-    <button>Log In</button>
-  ) : (
-    <>
-      <button>Log Out</button>
-      <div>
-        <label htmlFor="name">Name: </label>
-        <input id="name" />
-      </div>
-    </>
-  )}
-</>
-); }
+  return (
+    // Replace the div below with the MachineContext.Provider component
+    <div>
+      <UserInterface />
+    </div>
+  );
+}
 
 export default App;
 `,
   },
-  "/machine.ts": {
+  "/UserInterface.tsx": {
+    code: `function UserInterface() {
+  const isLoggedOut = true; // Change this to match a user's login status using state.matches()
+
+  return (
+    <>
+      {isLoggedOut ? (
+        <button>Log In</button>
+      ) : (
+        <>
+          <button>Log Out</button>
+          <form>
+            <input placeholder="Name" />
+            <button>Submit</button>
+          </form>
+          <p>Name: </p>
+        </>
+      )}
+    </>
+  );
+}
+
+export default UserInterface;
+`,
+},
+"/machine.ts": {
     active: true,
     code: `import { setup } from "xstate";
 
@@ -340,59 +354,89 @@ export const machine = setup({
 },
 }, solution : {
   "/App.js": {
-    code: `import { machine } from "./machine";
-import { useMachine } from "@xstate/react";
+    code: `import UserInterface from "./UserInterface";
+import { MachineContext } from "./machine";
 
 function App() {
-const [state, send] = useMachine(machine);
-const { name } = state.context;
-const isLoggedOut = state.matches("Logged Out");
-
-return (
-
-<>
-  {isLoggedOut ? (
-    <button onClick={() => send({ type: "log.in" })}>Log In</button>
-  ) : (
-    <>
-      <button onClick={() => send({ type: "log.out" })}>Log Out</button>
-      <div>
-        <input
-          placeholder="Name"
-          value={name}
-          onChange={(e) => send({ type: "change.name", name: e.target.value })}
-        />
-        <p>Name: {name}</p>
-      </div>
-    </>
-  )}
-</>
-); }
+  return (
+    <MachineContext.Provider>
+      <UserInterface />
+    </MachineContext.Provider>
+  );
+}
 
 export default App;
+`,
+  },
+  "/UserInterface.tsx": {
+    code: `import { MachineContext } from "./machine";
+
+function UserInterface() {
+  const { send } = MachineContext.useActorRef();
+  const state = MachineContext.useSelector((state) => state);
+  const { name, newName } = state.context;
+  const isLoggedOut = state.matches("Logged Out");
+
+  return (
+    <>
+      {isLoggedOut ? (
+        <button onClick={() => send({ type: "log.in" })}>Log In</button>
+      ) : (
+        <>
+          <button onClick={() => send({ type: "log.out" })}>Log Out</button>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              send({ type: "set.newName", newName: name });
+            }}
+          >
+            <input
+              placeholder="Name"
+              value={name}
+              onChange={(e) =>
+                send({ type: "change.name", name: e.target.value })
+              }
+            />
+            <button>Submit</button>
+          </form>
+          <p>Name: {newName}</p>
+        </>
+      )}
+    </>
+  );
+}
+
+export default UserInterface;
 `,
   },
   "/machine.ts": {
     active: true,
     code: `import { assertEvent, assign, setup } from "xstate";
+import { createActorContext } from "@xstate/react";
 
 export const machine = setup({
   types: {
-    context: {} as { name: string },
+    context: {} as { name: string; newName: string },
     events: {} as
       | { type: "log.in" }
       | { type: "log.out" }
-      | { type: "change.name"; name: string },
+      | { type: "change.name"; name: string }
+      | { type: "set.newName"; newName: string },
   },
   actions: {
     handleChangeName: assign(({ event }) => {
       assertEvent(event, "change.name");
       return { name: event.name };
     }),
+    handleSetNewName: assign(({ event }) => {
+      assertEvent(event, "set.newName");
+      return { newName: event.newName };
+    }),
   },
 }).createMachine({
   context: {
     name: "",
+    newName: "",
   },
   id: "Name Machine",
   initial: "Logged Out",
@@ -411,6 +455,11 @@ export const machine = setup({
             type: "handleChangeName",
           },
         },
+        "set.newName": {
+          actions: {
+            type: "handleSetNewName",
+          },
+        },
         "log.out": {
           target: "Logged Out",
         },
@@ -418,6 +467,8 @@ export const machine = setup({
     },
   },
 });
+
+export const MachineContext = createActorContext(machine);
 `,
 },
 }}} />
