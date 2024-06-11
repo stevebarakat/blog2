@@ -25,7 +25,7 @@ function CodeEditor({
         options={{
           showLineNumbers: true, // default - true
           showInlineErrors: false, // default - false
-          wrapContent: true, // default - false
+          wrapContent: false, // default - false
           editorHeight: 500, // default - 300
         }}
         customSetup={{

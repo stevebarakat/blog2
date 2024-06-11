@@ -1,3 +1,11 @@
+:root {
+  --color-primary: hsl(51, 100%, 40%);
+  --color-secondary: hsl(236, 17%, 20%);
+  --color-tertiary: hsl(236, 17%, 10%);
+  --color-text: hsl(236, 17%, 90%);
+  --color-link: hsl(51, 100%, 50%);
+}
+
 *,
 ::before,
 ::after {
@@ -19,12 +27,12 @@ body {
   display: flex;
   min-height: 100vh;
   flex-direction: column;
-  background: hsl(236, 17%, 10%);
-  color: hsl(236, 17%, 90%);
+  background: var(--color-tertiary);
+  color: var(--color-text);
 }
 
 a {
-  color: hsl(51, 100%, 50%);
+  color: var(--color-link);
   text-decoration: none;
 }
 
@@ -41,7 +49,7 @@ button {
   padding: 0.5em 1em;
   border: none;
   border-radius: 4px;
-  background-color: hsl(236, 17%, 20%);
+  background-color: var(--color-secondary);
   color: white;
   cursor: pointer;
 }
@@ -53,19 +61,15 @@ h1 {
 }
 
 .page h1 {
-  color: hsl(51, 100%, 40%);
+  color: var(--color-primary);
   font-family: "Tekton";
   text-decoration: underline;
   text-underline-offset: 0.2em;
 }
 
-h2 {
-  background: red;
-}
-
 .stately {
   border-radius: 8px;
-  border: 1px solid hsl(236, 17%, 20%);
+  border: 1px solid var(--color-secondary);
   width: 75ch;
   margin: 0 auto;
   pointer-events: none;
@@ -80,7 +84,7 @@ article {
   max-width: 100%;
   margin: 0 auto;
   padding: 48px;
-  /* background-color: hsl(236, 17%, 20%); */
+  /* background-color: var(--color-secondary); */
 }
 
 .toolbar {
@@ -88,8 +92,8 @@ article {
   justify-content: space-between;
   align-items: center;
   padding: 4px;
-  background: hsl(51, 100%, 40%);
-  border: 1px solid hsl(236, 17%, 20%);
+  background: var(--color-primary);
+  border: 1px solid var(--color-secondary);
   border-radius: 4px 4px 0 0;
   border-bottom: none;
   color: white;
@@ -103,7 +107,7 @@ article {
 
 header {
   color: white;
-  border-bottom: 1px solid hsl(236, 17%, 20%);
+  border-bottom: 1px solid var(--color-secondary);
   & a {
     color: white;
     text-decoration: none;
@@ -123,8 +127,8 @@ header {
       font-family: "Tekton";
       font-weight: bold;
       position: relative;
-      background: hsl(51, 100%, 40%);
-      color: hsl(236, 17%, 10%);
+      background: var(--color-primary);
+      color: var(--color-secondary);
       height: fit-content;
       left: 50px;
       top: 10px;
@@ -136,7 +140,7 @@ header {
         height: 0px;
         border-style: solid;
         border-width: 0 25px 50px 25px;
-        border-color: transparent transparent hsl(51, 100%, 40%) transparent;
+        border-color: transparent transparent var(--color-primary) transparent;
         rotate: 270deg;
         left: -50px;
         top: -12px;
@@ -150,8 +154,9 @@ header {
   margin: 0;
   width: 100%;
   max-width: 100%;
-  background: hsl(236, 17%, 20%);
+  background: var(--color-secondary);
   position: fixed;
+  border-top: 1px solid var(--color-primary);
   & p {
     margin: 8px 24px;
   }
@@ -174,11 +179,26 @@ footer {
 
 ol.table-of-contents {
   padding: 0;
+  border: 1px solid var(--color-primary);
   & li {
-    background: hsl(236, 17%, 20%);
+    background: var(--color-secondary);
     padding: 1rem;
-    border: 1px solid hsl(236, 17%, 10%);
+    border-top: 1px solid var(--color-primary);
     list-style-position: inside;
+    font-family: "Tekton";
+    color: var(--color-primary);
+    font-weight: bold;
+    font-size: 1.5rem;
+    &:first-child {
+      border-top: none;
+    }
+    & p {
+      color: var(--color-text);
+      font-weight: normal;
+      font-size: 1rem;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
   }
   & .lesson-title {
     font-size: 1.5rem;
@@ -188,6 +208,26 @@ ol.table-of-contents {
 }
 
 .exercise {
-  /* background: hsl(236, 17%, 20%); */
-  margin: 48px 0;
+  background: var(--color-secondary);
+  margin: 0 0 48px;
+  padding: 24px;
+  border-radius: 0 0 6px 6px;
+}
+h2 {
+  color: var(--color-secondary);
+  border-radius: 4px 4px 0 0;
+  margin: 48px 0 0;
+  padding: 0;
+  font-size: 1.5rem;
+  font-weight: bold;
+  padding: 24px;
+  background: var(--color-primary);
+}
+
+.requirements {
+  background: hsl(51 100% 40%/0.15);
+  margin: 0;
+  padding: 24px;
+  border-radius: 4px;
+  border: 1px solid var(--color-primary);
 }
