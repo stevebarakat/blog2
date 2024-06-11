@@ -90,7 +90,15 @@ return (
 export default App;
 ```
 
-As you can see, the `context` property in the machine definition is used to define the initial context of the machine. The `assign` action is used to update the context when the `change.volume` event is sent. The context is accessed in the React component using `state.context`. The volume is displayed in a paragraph element, and an input element is used to change the volume by sending the `change.volume` event with the new volume. The state machine transitions between the "Stopped" and "Playing" states when the "start" and "stop" events are sent, respectively. Here's the state machine in action:
+### Key Points:
+- The `context` property in the machine definition is used to define the initial context of the machine.
+- The `assign` action is used to update the context when the `change.volume` event is sent.
+- Context is accessed in the React component with the `useSelector` hook, using `state.context`.
+- The volume is displayed in a paragraph element,
+- An input element is used to change the volume by sending the `change.volume` event with the new volume.
+- The state machine transitions between the "Stopped" and "Playing" states when the "start" and "stop" events are sent, respectively.
+
+If it helps, you can think of the volume value we're sending with the `change.volume` event, as the "payload."
 </div>
 
 <CodeEditor
@@ -173,12 +181,12 @@ export const machine = setup({
 />
 
 <div className="container">
-Play around with the code above to see how the state machine transitions between states when the button is clicked. Here are some excercises to try:
+Play around with the code above to get a better understanding of how context works in XState. Here's a few ideas to get you started:
 
 <ul>
-  <li>Change the name of initial value of context to 25.</li>
+  <li>Change the initial value of context to 25.</li>
 
-  <li>Change the name context to "level."</li>
+  <li>Change the name we're using in context for storing that value from "volume" to "payload."</li>
 </ul>
 </div>
 ## Exercise

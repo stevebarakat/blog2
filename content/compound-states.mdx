@@ -5,9 +5,17 @@ position: 3
 ---
 
 <div className="container">
-In this lesson, we'll introduce compound (or parent/child) states. Compound states are states that contain other states. They are useful for organizing and structuring complex state machines. Compound states can have nested states, which can have their own nested states, and so on. This allows you to create a hierarchical structure of states that can represent complex behavior.
+In this lesson, we'll get familiar with compound (or parent/child) states. Compound states are states that contain other states. They are useful for organizing and structuring complex state machines. Compound states can have nested states, which can have their own nested states, and so on. This allows you to create a hierarchical structure of states that can represent complex behavior.
 
-Let's take a look at an example of a simple state machine with compound states (technically a statechart). This statechart represents a media player that can be in one of three states: "Opened", "Closed", and "Closing". The "Closed" state is a parent state. It has three child states: "Stopped", "Playing", and "Paused". The "Closing" state transitions to the "Closed.Playing" state after 1500ms. Here's the state machine defined in Stately:
+We'll also use a special kind of transition called a "delayed transition" to transition from one state to another after a certain amount of time has passed. This is useful for emulating the time it takes for a process to complete, such as a loading a media player.
+
+Let's take a look at an example of a simple state machine with compound states (technically a statechart). This statechart represents an arcane technology called a CD player 😁, in which the CDs are placed in a tray and mechnically closed. It can be in one of three states:
+- "Opened", "Closed", and "Closing".
+- The "Closed" state is a parent state.
+- It has three child states: "Stopped", "Playing", and "Paused".
+- The "Closing" state transitions to the "Closed" state after 1500ms.
+
+Here's the state machine modeled in Stately Studio:
 
 </div>
 
@@ -17,19 +25,20 @@ Let's take a look at an example of a simple state machine with compound states (
 />
 
 <div className="container">
-In XState, a state machine is defined using a JSON-like object. Here's the same state machine defined in XState:
 
+And here's the code in XState:
 ```ts
 import { setup } from "xstate";
 
 export const machine = setup({
   types: {
+    context: {} as {},
     events: {} as
-      | { type: "CLOSE" }
+      | { type: "OPEN" }
       | { type: "PLAY" }
-      | { type: "PAUSE" }
       | { type: "STOP" }
-      | { type: "OPEN" },
+      | { type: "PAUSE" }
+      | { type: "CLOSE" },
   },
 }).createMachine({
   context: {},
@@ -39,10 +48,14 @@ export const machine = setup({
     Opened: {
       on: {
         CLOSE: {
-          target: "Closed",
-        },
-        PLAY: {
           target: "Closing",
+        },
+      },
+    },
+    Closing: {
+      after: {
+        "1500": {
+          target: "Closed",
         },
       },
     },
@@ -83,18 +96,11 @@ export const machine = setup({
         },
       },
     },
-    Closing: {
-      after: {
-        "1500": {
-          target: "#Parent states.Closed.Playing",
-        },
-      },
-    },
   },
 });
 ```
 
-To use this machine in a React component, we can use the `useMachine` hook from `@xstate/react`:
+To use this machine in our React component, we'll use the `useMachine` hook again:
 
 ```tsx
 import { machine } from "./machine";
@@ -140,8 +146,7 @@ function App() {
 export default App;
 ```
 
-As you can see we are using the `useMachine` hook to get the current `state` and the `send` function to dispatch events to the machine. When the button is clicked, the "next" event is sent to the machine, which transitions to the next state. The current state is displayed in a paragraph element. Below is the state machine in action:
-
+As you can see, we're using the `matches` method to check if the current state matches a specific state. This is useful for conditionally rendering UI elements based on the current state of the machine. We're also using the `after` property to transition to another state after a certain amount of time has passed. This is useful for modeling time-based behavior in your state machines. In this case, we're transitioning from the "Closing" state to the "Closed.Playing" state after 1500ms.
 </div>
 
 <CodeEditor
@@ -152,46 +157,111 @@ As you can see we are using the `useMachine` hook to get the current `state` and
 import { useMachine } from "@xstate/react";
 
 function App() {
-const [state, send] = useMachine(machine);
-return (
+  const [state, send] = useMachine(machine);
+  const isPlaying = state.matches({ Closed: "Playing" });
+  const isOpened = state.matches("Opened");
+  return (
+    <div>
+      <h1>{JSON.stringify(state.value)}</h1>
+      <button
+        onClick={() =>
+          send({
+            type: isOpened ? "CLOSE" : "OPEN",
+          })
+        }
+      >
+        {isOpened ? "close" : "open"}
+      </button>
+      <button
+        onClick={() =>
+          send({
+            type: isPlaying ? "PAUSE" : "PLAY",
+          })
+        }
+      >
+        {isPlaying ? "pause" : "play"}
+      </button>
+      <button
+        disabled={isOpened || !isPlaying}
+        onClick={() => {
+          send({ type: "STOP" });
+        }}
+      >
+        stop
+      </button>
+    </div>
+  );
+}
 
-<>
-  <p>{state.value}</p>
-  <button
-    onClick={() =>
-      send({
-        type: "next",
-      })
-    }
-  >
-    next
-  </button>
-</>
-); }
-
-export default App;`,
+export default App;
+`,
       },
       "/machine.ts": {
         code: `import { setup } from "xstate";
 
 export const machine = setup({
   types: {
-    events: {} as { type: "next" },
+    context: {} as {},
+    events: {} as
+      | { type: "OPEN" }
+      | { type: "PLAY" }
+      | { type: "STOP" }
+      | { type: "PAUSE" }
+      | { type: "CLOSE" },
   },
 }).createMachine({
-  initial: "First State",
+  context: {},
+  id: "Parent states",
+  initial: "Opened",
   states: {
-    "First State": {
+    Opened: {
       on: {
-        next: {
-          target: "Second State",
+        CLOSE: {
+          target: "Closing",
         },
       },
     },
-    "Second State": {
+    Closing: {
+      after: {
+        "1500": {
+          target: "Closed",
+        },
+      },
+    },
+    Closed: {
+      initial: "Stopped",
       on: {
-        next: {
-          target: "First State",
+        OPEN: {
+          target: "Opened",
+        },
+      },
+      states: {
+        Stopped: {
+          on: {
+            PLAY: {
+              target: "Playing",
+            },
+          },
+        },
+        Playing: {
+          on: {
+            PAUSE: {
+              target: "Paused",
+            },
+            STOP: {
+              target: "Stopped",
+            },
+          },
+        },
+        Paused: {
+          on: {
+            PLAY: {
+              target: "Playing",
+            },
+            STOP: {
+              target: "Stopped",
+            },
+          },
         },
       },
     },
