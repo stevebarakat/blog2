@@ -6,13 +6,8 @@ import "../styles.css";
 export const metadata = {
   title: BLOG_TITLE,
   description: BLOG_DESCRIPTION,
-  images: [
-    {
-      url: "https://res.cloudinary.com/stevebarakat/image/upload/v1718105711/xstate-for-everyone-logo.png", // Must be an absolute URL
-    },
-  ],
-  locale: "en_US",
-  type: "website",
+  image:
+    "https://res.cloudinary.com/stevebarakat/image/upload/v1718105711/xstate-for-everyone-logo.png",
 };
 
 function RootLayout({ children }) {
