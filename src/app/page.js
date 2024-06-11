@@ -18,7 +18,7 @@ async function Home() {
 
             <p>
               {abstract}{" "}
-              <Link href={`${slug}`}>
+              <Link style={{ whiteSpace: "nowrap" }} href={`${slug}`}>
                 Go to lesson <span>→</span>
               </Link>
             </p>

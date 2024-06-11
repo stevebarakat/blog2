@@ -6,11 +6,7 @@ type Props = {
 };
 
 function Stately({ url, height }: Props) {
-  return (
-    <div className="wrapper">
-      <iframe className="stately" src={url} width="100%" height={height} />
-    </div>
-  );
+  return <iframe className="stately" src={url} width="100%" height={height} />;
 }
 
 export default Stately;
