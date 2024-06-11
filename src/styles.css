@@ -59,6 +59,10 @@ h1 {
   text-underline-offset: 0.2em;
 }
 
+h2 {
+  background: red;
+}
+
 .stately {
   border-radius: 8px;
   border: 1px solid hsl(236, 17%, 20%);
@@ -181,4 +185,9 @@ ol.table-of-contents {
     font-weight: bold;
     font-family: "Tekton";
   }
+}
+
+.exercise {
+  /* background: hsl(236, 17%, 20%); */
+  margin: 48px 0;
 }

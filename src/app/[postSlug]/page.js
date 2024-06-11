@@ -4,10 +4,9 @@ import { BLOG_TITLE } from "../../constants";
 import CodeSnippet from "../../components/CodeSnippet/CodeSnippet";
 import Stately from "../../components/Stately";
 import Stackblitz from "../../components/Stackblitz";
-import CodeEditorProvider from "../../components/CodeEditorProvider";
+import CodeEditor from "../../components/CodeEditor";
 
 export async function generateMetadata({ params }) {
-  console.log("params", params);
   const { frontmatter } = await loadBlogPost(params?.postSlug);
   return {
     title: `${frontmatter.title} | ${BLOG_TITLE}`,
@@ -31,7 +30,7 @@ async function BlogPost({ params }) {
             pre: CodeSnippet,
             Stately,
             Stackblitz,
-            CodeEditorProvider,
+            CodeEditor,
           }}
         />
       </div>

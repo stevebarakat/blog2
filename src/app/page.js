@@ -1,7 +1,6 @@
 import React from "react";
 import Link from "next/link";
 import { getBlogPostList } from "../helpers/file-helpers";
-import { format } from "date-fns";
 
 async function Home() {
   const blogPosts = await getBlogPostList();
