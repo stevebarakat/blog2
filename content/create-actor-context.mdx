@@ -1,11 +1,11 @@
 ---
 title: Using createActorContext to work with Context
-abstract: In this lesson, we'll look at a more convienent way of accessing and interacting with context. To do this we'll use a helper function called createActorContext from the @xstate/react package.
+abstract: In this lesson, we'll look at a more convienent way of accessing and interacting with context data. To do this we'll use a helper function called createActorContext from the @xstate/react package.
 publishedOn: 3
 ---
 
 <div className="container">
-In this excercise, we'll be re-creating the same example from the previous lesson, but we'll be using `createActorContext` to work with context instead. `createActorContext` is a helper function from the [@xstate/react](https://github.com/statelyai/xstate/tree/main/packages/xstate-react#readme/ "@xstate/react") package that creates a context object that can be used to store data in a state machine. Here's an example of a state machine that stores the current volume level in the context using `createActorContext`:
+This example re-creates the example from the [previous lesson](/context-exercise "Storing data in State Machines") , but uses `createActorContext` to work with context instead. `createActorContext` is a helper function from [@xstate/react](https://github.com/statelyai/xstate/tree/main/packages/xstate-react#readme/ "@xstate/react") that creates a context object used to store data in a state machine. Here's an example of a state machine that stores the current volume level in the context using `createActorContext`:
 
 ```ts
 import { setup, assign, assertEvent } from "xstate";
@@ -60,19 +60,55 @@ export const machine = setup({
 export const MachineContext = createActorContext(machine);
 ```
 
-To use this machine in a React component, we can use the `useMachine` hook from `@xstate/react`:
+To use MachineContext we created a new `Volume` component that is wrapped in a `MachineContext.Provider` component. Similar to using React's context, the components that want to use this context  must be wrapped in a `Provider` component.
+
+Notice that the `MachineContext.Provider` component takes an `options` prop used to pass initial context data to the state machine. In this example, we pass an initial volume level of `50` to the state machine.
+
+Here's the `App` component that uses the `MachineContext.Provider` component:
 
 ```tsx
-import { machine } from "./machine";
-import { useMachine } from "@xstate/react";
+import Volume from "./Volume";
+import { MachineContext } from "./machine";
 
 function App() {
-  const [state, send] = useMachine(machine);
+  return (
+    <MachineContext.Provider
+      options={{
+        input: {
+          volume: 50,
+        },
+      }}
+    >
+      <Volume />
+    </MachineContext.Provider>
+  );
+}
+
+export default App;
+```
+
+Now let's take a look at the `Volume` component that uses the `MachineContext` to access the state machine's context and send events to the state machine:
+
+```tsx
+import { MachineContext } from "./machine";
+
+function Volume() {
+  const { send } = MachineContext.useActorRef();
+  const state = MachineContext.useSelector((state) => state);
   const { volume } = state.context;
+  const isPlaying = state.matches("Playing");
 
   return (
     <div>
+      <p>State: {state.value}</p>
       <p>Volume: {volume}</p>
+      <button
+        onClick={() => {
+          send({ type: isPlaying ? "stop" : "start" });
+        }}
+      >
+        {isPlaying ? "stop" : "play"}
+      </button>
       <input
         type="range"
         value={volume}
@@ -84,11 +120,15 @@ function App() {
   );
 }
 
-export default App;
+export default Volume;
+
 ```
 
-As you can see, the `context` property in the machine definition is used to define the initial context of the machine. The `assign` action is used to update the context when the `change.volume` event is sent. The context is accessed in the React component using `state.context`. The volume level is displayed in a paragraph element, and an input element is used to change the volume level by sending the `change.volume` event with the new volume level. The state machine transitions between the "Stopped" and "Playing" states when the "start" and "stop" events are sent, respectively. Here's the state machine in action:
+The `MachineContext` object provides two hooks: `useActorRef` and `useSelector.`
+- `useActorRef` returns a reference to the state machine, which is used to send events to it.
+- `useSelector` returns a selector function that is used to access specific slices of the state machine's context ***without*** causing all the decendents of MixerContext to re-render.
 
+In this example, we use `useSelector` to access `context` and display the current volume level and state. We use `useActorRef` to send events to the state machine when the user interacts with the UI. The `Volume` component displays the current volume level, state, and provides a button to start or stop the audio and a range input to adjust the volume level. The state machine transitions between the "Playing" and "Stopped" states based on the events sent to it. The volume level is updated when the user interacts with the range input. Here's the `Volume` component in action:
 </div>
 
 <CodeEditor
@@ -119,11 +159,21 @@ export default App;`,
 
 function Volume() {
   const { send } = MachineContext.useActorRef();
-  const { volume } = MachineContext.useSelector((state) => state.context);
+  const state = MachineContext.useSelector((state) => state);
+  const { volume } = state.context;
+  const isPlaying = state.matches("Playing");
 
   return (
     <div>
+      <p>State: {state.value}</p>
       <p>Volume: {volume}</p>
+      <button
+        onClick={() => {
+          send({ type: isPlaying ? "stop" : "start" });
+        }}
+      >
+        {isPlaying ? "stop" : "play"}
+      </button>
       <input
         type="range"
         value={volume}
@@ -135,7 +185,8 @@ function Volume() {
   );
 }
 
-export default Volume;`,
+export default Volume;
+`,
       },
       "/machine.ts": {
         code: `import { setup, assign, assertEvent } from "xstate";
@@ -194,78 +245,49 @@ export const MachineContext = createActorContext(machine);
   }}
 />
 
+<div className="container">
 Play around with the code above to see how the state machine transitions between states when the button is clicked. Here are some excercises to try:
 
-<div className="wrapper">
 <ul>
   <li>Change the name of initial value of context to 25.</li>
 
   <li>Change the name context to "level."</li>
 </ul>
 </div>
+## Exercise
+<div className="exercise">
 
-## Context Exercise
+<div className="explanation">
+### What we're building:
 
-In this excercise we'll be using what we learned last lesson and this lesson. We'll be creating a simple login form that stores the user's name in the state machine's context. The form will have two states: "Logged Out" and "Logged In." When the user is logged out, they will see a "Log In" button. When the user is logged in, they will see a "Log Out" button and a text input to enter their name.
+In this excercise we'll be using what we learned [last lesson](/state-machine-exercise "Getting Started with State Machines") *and* this lesson to create a simple login form that stores a user's **name** in context.
 
-Your instructions are as follows:
+The form will have two states:
+- "Logged Out" and "Logged In."
+- When the user is logged out, they will see a "Log In" button.
+- When the user is logged in, they will see a "Log Out" button and a text input to enter their name.
+</div>
+
+<div className="requirements">
+### Instructions:
 
 1. Create a new state machine called "Name Machine" and add the following states and events:
 
-```ts
-import { setup, assign, assertEvent } from "xstate";
+- States:
+  - "Logged Out"
+  - "Logged In"
 
-export const machine = setup({
-  types: {
-    context: {} as { name: string },
-    events: {} as
-      | { type: "log.in" }
-      | { type: "log.out" }
-      | { type: "change.name"; name: string },
-  },
-  actions: {
-    handleChangeName: assign(({ event }) => {
-      assertEvent(event, "change.name");
-      return { name: event.name };
-    }),
-  },
-}).createMachine({
-  context: {
-    name: "",
-  },
-  id: "Name Machine",
-  initial: "Logged Out",
-  states: {
-    "Logged Out": {
-      on: {
-        "log.in": {
-          target: "Logged In",
-        },
-      },
-    },
-    "Logged In": {
-      on: {
-        "change.name": {
-          actions: {
-            type: "handleChangeName",
-          },
-        },
-        "log.out": {
-          target: "Logged Out",
-        },
-      },
-    },
-  },
-});
-```
+- Events:
+  - "log.in"
+  - "log.out"
+  - "change.name"
 
-2. Add a button to the "Logged Out" state that says "Log In" and a button to the "Logged In" state that says "Log Out." When the user clicks the "Log In" button, send the "log.in" event to the state machine. When the user clicks the "Log Out" button, send the "log.out" event to the state machine.
+2. Add a `button` for the "Logged Out" state that says "Log In" and a `button` for the "Logged In" state that says "Log Out." When the user clicks the "Log In" button, send the "log.in" event to the state machine. When the user clicks the "Log Out" button, send the "log.out" event to the state machine.
 
-3. Add a text input to the "Logged In" state that allows the user to enter their name. When the user types in their name, send the "change.name" event with the name as the value of the event to the state machine.
+3. Add a text `input` to the "Logged In" state that allows the user to enter their name. When the user types in their name, send the "change.name" event with the name as the value of the event to the state machine.
 
-4. Add a paragraph element to the "Logged In" state that displays the user's name from the state machine's context.
-
-Here's the starter code:
+4. Add a `p` element to the "Logged In" state that displays the user's name from the state machine's context.
+</div>
 
 <CodeEditor files={
   { starter: {
@@ -392,3 +414,4 @@ export const machine = setup({
 `,
 },
 }}} />
+</div>

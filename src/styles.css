@@ -34,10 +34,16 @@ body {
 a {
   color: var(--color-link);
   text-decoration: none;
+  &:hover {
+    text-decoration: underline;
+  }
 }
 
 code {
-  padding: 0.2em 0.4em;
+  /* padding: 0.2em 0.4em; */
+  font-size: 105%;
+  /* background: hsl(0 0% 0%); */
+  color: var(--color-primary);
 }
 
 .container {
@@ -100,8 +106,7 @@ article {
   width: 1285px;
   max-width: 100%;
   margin: 0 auto;
-  padding: 48px;
-  /* background-color: var(--color-secondary); */
+  padding: 0 48px 48px;
 }
 
 .toolbar {
