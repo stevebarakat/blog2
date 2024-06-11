@@ -1,24 +1,19 @@
 ---
-title: Getting started with State Machines
-abstract: In this lesson, we'll get started with state machines in XState by exploring three importent concepts - state, transitions, and events.
-position: 1
+title: Working with Compound States
+abstract: In this lesson, we'll begin working with statecharts by using compound (or parent/child) states.
+position: 4
 ---
 
 <div className="container">
-In this first excercise, we'll focus on **state**, **transitions**, and
-**events** in a state machine.
-
-A **state** describes the machine’s status or mode, which could be as simple as "First State" and "Second State". A state machine can only be in one state at a time.
-
-A **transition** is a change in **state** triggered by an **event**.
-
-An **event** is a signal that triggers a transition. For example, when a user clicks a button, the state machine will transition from one state to another. Here's an example of a simple state machine that transitions from "First State" to "Second State" when the "next" event is sent:
+In this lesson, we'll introduce compound (or parent/child) states. Compound states are states that contain other states. They are useful for organizing and structuring complex state machines. Compound states can have nested states, which can have their own nested states, and so on. This allows you to create a hierarchical structure of states that can represent complex behavior.
+</div>
 
 <Stately
-  url="https://stately.ai/registry/editor/embed/6ad630e7-c4f1-40e5-8068-4c0a0398a8e9?machineId=a5701504-59a3-4092-9bd4-3972be705357&mode=design"
-  height="350px"
+  url="https://stately.ai/registry/editor/embed/6ad630e7-c4f1-40e5-8068-4c0a0398a8e9?machineId=f5af41be-b005-4bb3-834c-592861cfde06"
+  height="650px"
 />
 
+<div className="container">
 In XState, a state machine is defined using a JSON-like object. Here's the same state machine defined in XState:
 
 ```ts

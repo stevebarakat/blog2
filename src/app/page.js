@@ -10,7 +10,7 @@ async function Home() {
       <h1>Module One</h1>
 
       <ol className="table-of-contents">
-        {blogPosts.map(({ slug, title, abstract, publishedOn }) => (
+        {blogPosts.map(({ slug, title, abstract, position }) => (
           <li key={slug}>
             <Link className="lesson-title" href={`${slug}`}>
               {title}
