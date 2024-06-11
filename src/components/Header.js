@@ -1,11 +1,13 @@
 import React from "react";
 import Logo from "./Logo";
+import { BLOG_DESCRIPTION } from "../constants";
 
 function Header() {
   return (
     <header className="site-header">
-      <div className="container">
+      <div>
         <Logo />
+        <p>{BLOG_DESCRIPTION}</p>
       </div>
     </header>
   );

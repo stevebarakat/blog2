@@ -6,6 +6,11 @@
   -webkit-font-smoothing: antialiased;
 }
 
+@font-face {
+  font-family: "Tekton";
+  src: local("Tekton"), url("/tekton.woff") format("woff");
+}
+
 body {
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
     "Helvetica Neue", Arial, sans-serif;
@@ -41,6 +46,12 @@ button {
   cursor: pointer;
 }
 
+h1 {
+  color: hsl(51, 100%, 40%);
+  font-size: 2em;
+  margin: 24px 0 12px;
+}
+
 .stately {
   border-radius: 8px;
   border: 1px solid hsl(236, 17%, 20%);
@@ -66,7 +77,7 @@ article {
   justify-content: space-between;
   align-items: center;
   padding: 4px;
-  background-color: hsl(51, 100%, 40%);
+  background: hsl(51, 100%, 40%);
   border: 1px solid hsl(236, 17%, 20%);
   border-radius: 4px 4px 0 0;
   border-bottom: none;
@@ -92,6 +103,42 @@ header {
   padding: 1em;
   width: 100%;
   max-width: 100%;
+  & div {
+    display: flex;
+    width: 800px;
+    gap: 1em;
+    margin: 0 auto;
+    & p {
+      font-family: "Tekton";
+      font-weight: bold;
+      position: relative;
+      background: hsl(51, 100%, 40%);
+      color: hsl(236, 17%, 10%);
+      height: fit-content;
+      left: 50px;
+      top: 10px;
+      padding: 0 10px;
+      &:before {
+        content: "";
+        position: absolute;
+        width: 0px;
+        height: 0px;
+        border-style: solid;
+        border-width: 0 25px 50px 25px;
+        border-color: transparent transparent hsl(51, 100%, 40%) transparent;
+        rotate: 270deg;
+        left: -50px;
+        top: -12px;
+      }
+    }
+  }
+}
+
+.site-footer {
+  padding: 1em;
+  width: 100%;
+  max-width: 100%;
+  background: hsl(236, 17%, 20%);
 }
 
 header {
@@ -101,7 +148,6 @@ header {
 
 footer {
   text-align: center;
-  position: fixed;
   bottom: 0;
   width: 100%;
 }
