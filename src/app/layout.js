@@ -4,10 +4,18 @@ import Footer from "../components/Footer";
 import "../styles.css";
 
 export const metadata = {
-  title: BLOG_TITLE,
-  description: BLOG_DESCRIPTION,
-  image:
-    "https://res.cloudinary.com/stevebarakat/image/upload/v1718105711/xstate-for-everyone-logo.png",
+  openGraph: {
+    title: BLOG_TITLE,
+    description: BLOG_DESCRIPTION,
+    images: [
+      {
+        url: "https://res.cloudinary.com/stevebarakat/image/upload/v1718105711/xstate-for-everyone-logo.png",
+        alt: "XState for Everyone Logo",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
 };
 
 function RootLayout({ children }) {
