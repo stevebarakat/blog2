@@ -5,17 +5,9 @@ position: 3
 ---
 
 <div className="container">
-In this lesson, we'll get familiar with compound (or parent/child) states. Compound states are states that contain other states. They are useful for organizing and structuring complex state machines. Compound states can have nested states, which can have their own nested states, and so on. This allows you to create a hierarchical structure of states that can represent complex behavior.
+In this lesson, we'll  compound (or parent/child) states. Compound states are states that contain other states. They are useful for organizing and structuring complex state machines. Compound states can have nested states, which can have their own nested states, and so on. This allows you to create a hierarchical structure of states that can represent complex behavior.
 
-We'll also use a special kind of transition called a "delayed transition" to transition from one state to another after a certain amount of time has passed. This is useful for emulating the time it takes for a process to complete, such as a loading a media player.
-
-Let's take a look at an example of a simple state machine with compound states (technically a statechart). This statechart represents an arcane technology called a CD player 😁, in which the CDs are placed in a tray and mechnically closed. It can be in one of three states:
-- "Opened", "Closed", and "Closing".
-- The "Closed" state is a parent state.
-- It has three child states: "Stopped", "Playing", and "Paused".
-- The "Closing" state transitions to the "Closed" state after 1500ms.
-
-Here's the state machine modeled in Stately Studio:
+Let's take a look at an example of a simple state machine with compound states (technically a statechart). This statechart represents a media player that can be in one of three states: "Opened", "Closed", and "Closing". The "Closed" state is a parent state. It has three child states: "Stopped", "Playing", and "Paused". The "Closing" state transitions to the "Closed.Playing" state after 1500ms. Here's the state machine defined in Stately:
 
 </div>
 
@@ -25,20 +17,19 @@ Here's the state machine modeled in Stately Studio:
 />
 
 <div className="container">
+In XState, a state machine is defined using a JSON-like object. Here's the same state machine defined in XState:
 
-And here's the code in XState:
 ```ts
 import { setup } from "xstate";
 
 export const machine = setup({
   types: {
-    context: {} as {},
     events: {} as
-      | { type: "OPEN" }
+      | { type: "CLOSE" }
       | { type: "PLAY" }
-      | { type: "STOP" }
       | { type: "PAUSE" }
-      | { type: "CLOSE" },
+      | { type: "STOP" }
+      | { type: "OPEN" },
   },
 }).createMachine({
   context: {},
@@ -48,14 +39,10 @@ export const machine = setup({
     Opened: {
       on: {
         CLOSE: {
-          target: "Closing",
-        },
-      },
-    },
-    Closing: {
-      after: {
-        "1500": {
           target: "Closed",
+        },
+        PLAY: {
+          target: "Closing",
         },
       },
     },
@@ -96,11 +83,18 @@ export const machine = setup({
         },
       },
     },
+    Closing: {
+      after: {
+        "1500": {
+          target: "#Parent states.Closed.Playing",
+        },
+      },
+    },
   },
 });
 ```
 
-To use this machine in our React component, we'll use the `useMachine` hook again:
+To use this machine in a React component, we can use the `useMachine` hook from `@xstate/react`:
 
 ```tsx
 import { machine } from "./machine";
@@ -146,7 +140,8 @@ function App() {
 export default App;
 ```
 
-As you can see, we're using the `matches` method to check if the current state matches a specific state. This is useful for conditionally rendering UI elements based on the current state of the machine. We're also using the `after` property to transition to another state after a certain amount of time has passed. This is useful for modeling time-based behavior in your state machines. In this case, we're transitioning from the "Closing" state to the "Closed.Playing" state after 1500ms.
+As you can see we are using the `useMachine` hook to get the current `state` and the `send` function to dispatch events to the machine. When the button is clicked, the "next" event is sent to the machine, which transitions to the next state. The current state is displayed in a paragraph element. Below is the state machine in action:
+
 </div>
 
 <CodeEditor
@@ -157,111 +152,46 @@ As you can see, we're using the `matches` method to check if the current state m
 import { useMachine } from "@xstate/react";
 
 function App() {
-  const [state, send] = useMachine(machine);
-  const isPlaying = state.matches({ Closed: "Playing" });
-  const isOpened = state.matches("Opened");
-  return (
-    <div>
-      <h1>{JSON.stringify(state.value)}</h1>
-      <button
-        onClick={() =>
-          send({
-            type: isOpened ? "CLOSE" : "OPEN",
-          })
-        }
-      >
-        {isOpened ? "close" : "open"}
-      </button>
-      <button
-        onClick={() =>
-          send({
-            type: isPlaying ? "PAUSE" : "PLAY",
-          })
-        }
-      >
-        {isPlaying ? "pause" : "play"}
-      </button>
-      <button
-        disabled={isOpened || !isPlaying}
-        onClick={() => {
-          send({ type: "STOP" });
-        }}
-      >
-        stop
-      </button>
-    </div>
-  );
-}
+const [state, send] = useMachine(machine);
+return (
 
-export default App;
-`,
+<>
+  <p>{state.value}</p>
+  <button
+    onClick={() =>
+      send({
+        type: "next",
+      })
+    }
+  >
+    next
+  </button>
+</>
+); }
+
+export default App;`,
       },
       "/machine.ts": {
         code: `import { setup } from "xstate";
 
 export const machine = setup({
   types: {
-    context: {} as {},
-    events: {} as
-      | { type: "OPEN" }
-      | { type: "PLAY" }
-      | { type: "STOP" }
-      | { type: "PAUSE" }
-      | { type: "CLOSE" },
+    events: {} as { type: "next" },
   },
 }).createMachine({
-  context: {},
-  id: "Parent states",
-  initial: "Opened",
+  initial: "First State",
   states: {
-    Opened: {
+    "First State": {
       on: {
-        CLOSE: {
-          target: "Closing",
+        next: {
+          target: "Second State",
         },
       },
     },
-    Closing: {
-      after: {
-        "1500": {
-          target: "Closed",
-        },
-      },
-    },
-    Closed: {
-      initial: "Stopped",
+    "Second State": {
       on: {
-        OPEN: {
-          target: "Opened",
-        },
-      },
-      states: {
-        Stopped: {
-          on: {
-            PLAY: {
-              target: "Playing",
-            },
-          },
-        },
-        Playing: {
-          on: {
-            PAUSE: {
-              target: "Paused",
-            },
-            STOP: {
-              target: "Stopped",
-            },
-          },
-        },
-        Paused: {
-          on: {
-            PLAY: {
-              target: "Playing",
-            },
-            STOP: {
-              target: "Stopped",
-            },
-          },
+        next: {
+          target: "First State",
         },
       },
     },
@@ -301,7 +231,14 @@ For this exercise create a simple state machine that:
   { starter: {
   "/App.js": {
     code: `function App() {
-  return <button>current state goes here</button>;
+  return (
+    <div>
+      <h1>Current state goes here</h1>
+      <button>Weigh</button>
+      <button>Grind</button>
+      <button>Brew</button>
+    </div>
+  );
 }
 
 export default App;
@@ -323,24 +260,23 @@ export const machine = setup({
 },
 }, solution : {
   "/App.js": {
-    code: `import { useMachine } from "@xstate/react";
-import { machine } from "./machine";
+    code: `import { machine } from "./machine";
+import { useMachine } from "@xstate/react";
 
 function App() {
-const [state, send] = useMachine(machine);
+  const [state, send] = useMachine(machine);
+  return (
+    <div>
+      <h1>{JSON.stringify(state.value)}</h1>
+      <button onClick={() => send({ type: "weigh" })}>Weigh</button>
+      <button onClick={() => send({ type: "grind" })}>Grind</button>
+      <button onClick={() => send({ type: "brew" })}>Brew</button>
+    </div>
+  );
+}
 
-return (
-
-<button
-  onClick={() => {
-    send({ type: "switch" });
-  }}
->
-  {state.value}
-</button>
-); }
-
-export default App;`,
+export default App;
+`,
   },
   "/machine.ts": {
     active: true,
@@ -348,24 +284,49 @@ export default App;`,
 
 export const machine = setup({
   types: {
-    events: {} as { type: "switch" },
+    context: {} as {},
+    events: {} as { type: "weigh" } | { type: "grind" } | { type: "brew" },
   },
 }).createMachine({
-  initial: "Off",
+  context: {},
+  id: "Coffee Machine",
+  initial: "preparation",
   states: {
-    "Off": {
-      on: {
-        switch: {
-          target: "On",
+    preparation: {
+      initial: "idle",
+      states: {
+        idle: {
+          on: {
+            weigh: {
+              target: "weighed",
+            },
+          },
+        },
+        weighed: {
+          on: {
+            grind: {
+              target: "ground",
+            },
+          },
+        },
+        ground: {
+          on: {
+            brew: {
+              target: "#Coffee Machine.brewing",
+            },
+          },
         },
       },
     },
-    "On": {
-      on: {
-        switch: {
-          target: "Off",
+    brewing: {
+      after: {
+        "3000": {
+          target: "ready",
         },
       },
+    },
+    ready: {
+      type: "final",
     },
   },
 });
